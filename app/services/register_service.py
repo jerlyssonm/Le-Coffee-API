@@ -1,11 +1,11 @@
 from os import getenv
 from werkzeug.exceptions import BadRequest
 
-def validate_admin(request_data: dict):
+def validate_request(request_data: dict):
     valid_keys = set(getenv('ADM_KEYS').split(","))
     wrong_keys = set(request_data.keys()) - valid_keys
     wrong_values_type = [ value for value in request_data.values() if type(value) != str ]
-
+    
     if len(request_data) < 3:
         missing_keys = valid_keys - set(request_data.keys())
         error_description = {"missing keys": list(missing_keys)}
