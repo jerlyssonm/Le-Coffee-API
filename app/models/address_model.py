@@ -1,6 +1,7 @@
 from app.configs.database import db 
 from dataclasses import dataclass
 from sqlalchemy import Column, Integer, ForeignKey, String
+from sqlalchemy.orm import relationship
 
 @dataclass
 class AddressModel(db.Model):
@@ -22,4 +23,6 @@ class AddressModel(db.Model):
     country = Column(String, nullable=False, default="Brasil")
     cep = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('users.user_id'))
+
+    user = relationship("UserModel", back_populates="address")
 
