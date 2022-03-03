@@ -8,7 +8,7 @@ from uuid import uuid4
 
 @dataclass
 class AdminModel(db.Model):
-    id: int
+    id: str
     name: str
     email: str
 
