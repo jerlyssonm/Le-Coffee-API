@@ -3,7 +3,7 @@ from flask import current_app, request, jsonify
 from http import HTTPStatus
 from app.models.admin_model import AdminModel
 from app.configs.auth import auth
-
+from app.services.register_service import validate_request
 
 
 def signup():
@@ -11,11 +11,13 @@ def signup():
 
     admin_data = request.get_json()
 
-    admin_data['adm_key'] = token_urlsafe(16)
+    validate_data = validate_request(admin_data)
 
-    password_to_hash = admin_data.pop("password")
+    validate_data['adm_key'] = token_urlsafe(16)
 
-    new_admin = AdminModel(**admin_data)
+    password_to_hash = validate_data.pop("password")
+
+    new_admin = AdminModel(**validate_data)
 
     new_admin.password = password_to_hash
 
@@ -25,7 +27,6 @@ def signup():
 
     return jsonify(new_admin), HTTPStatus.CREATED
 
-    # Criar exception para verificar as chaves recebidas pelo JSON
 
 
 def signin():
