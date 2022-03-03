@@ -9,7 +9,7 @@ class AdminModel(db.Model):
     name: str
     email: str
 
-    __tablename__ = "admin"
+    __tablename__ = "admins"
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
