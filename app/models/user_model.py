@@ -13,7 +13,7 @@ class UserModel(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
-    password_hash = db.Column(db.String, nullable=False)
+    password_hash = db.Column(db.String, nullable=True)
 
     @property
     def password(self):
