@@ -1,5 +1,6 @@
 from app.configs.database import db 
 from dataclasses import dataclass
+from sqlalchemy import Column, Integer, String
 from werkzeug.security import generate_password_hash, check_password_hash
 
 @dataclass
@@ -10,11 +11,11 @@ class AdminModel(db.Model):
 
     __tablename__ = "admin"
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=False, unique=True)
-    password_hash = db.Column(db.String, nullable=True)
-    adm_key = db.Column(db.String, nullable=False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    password_hash = Column(String, nullable=True)
+    adm_key = Column(String, nullable=False)
 
 
     @property
