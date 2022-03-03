@@ -1,4 +1,8 @@
 from dataclasses import dataclass
+
+from sqlalchemy import Column, String, Integer
+from sqlalchemy.orm import relationship
+
 from app.configs.database import db
 
 @dataclass
@@ -10,7 +14,9 @@ class RegionModel(db.Model):
 
   __tablename__ = "region"
 
-  id = db.Column(db.Integer, primary_key = True)
-  name = db.Column(db.String, nullable = False)
-  latitude = db.Column(db.String, nullable = False)
-  longitude = db.Column(db.String, nullable = False)
+  id = Column(Integer, primary_key = True)
+  name = Column(String, nullable = False)
+  latitude = Column(String, nullable = False)
+  longitude = Column(String, nullable = False)
+
+  product = relationship("ProductModel", back_populates = "region")
