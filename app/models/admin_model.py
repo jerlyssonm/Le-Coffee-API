@@ -1,17 +1,20 @@
 from app.configs.database import db 
 from dataclasses import dataclass
-from sqlalchemy import Column, Integer, String
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Integer
+from uuid import uuid4
+
 
 @dataclass
 class AdminModel(db.Model):
-    id: int
+    id: str
     name: str
     email: str
 
     __tablename__ = "admins"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     password_hash = Column(String, nullable=True)
