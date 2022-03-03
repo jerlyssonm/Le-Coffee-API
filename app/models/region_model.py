@@ -12,7 +12,7 @@ class RegionModel(db.Model):
   latitude: str
   longitude: str
 
-  __tablename__ = "region"
+  __tablename__ = "regions"
 
   id = Column(Integer, primary_key = True)
   name = Column(String, nullable = False)
