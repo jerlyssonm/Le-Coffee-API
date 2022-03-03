@@ -17,9 +17,8 @@ def create_app():
 
     database.init_app(app)
     migration.init_app(app)
-    # jwt.init_app(app)
-    # auth.init_app(app)
-    # routes.init_app(app)
+    jwt.init_app(app)
+    routes.init_app(app)
 
     return app
 
