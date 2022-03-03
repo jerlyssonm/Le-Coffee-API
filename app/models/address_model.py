@@ -3,16 +3,16 @@ from dataclasses import dataclass
 from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-@dataclass
+# @dataclass
 class AddressModel(db.Model):
-    address_id: int
-    street: str
-    number: str
-    city: str
-    state: str
-    country: str
-    cep: str
-    user_id: int
+    # address_id: int
+    # street: str
+    # number: str
+    # city: str
+    # state: str
+    # country: str
+    # cep: str
+    # user_id: int
 
     __tablename__ = "addresses"
 
