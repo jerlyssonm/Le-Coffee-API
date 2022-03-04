@@ -11,12 +11,6 @@ def create_product():
         session: Session = current_app.db.session
         data = request.get_json()
 
-        if not re.fullmatch(
-            "^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$",
-            data["latitude"],
-        ):
-            return {"error": "err"}
-
         region = data.pop("region")
 
         product = ProductModel(**data)
