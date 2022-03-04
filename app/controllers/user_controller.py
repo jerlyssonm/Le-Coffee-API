@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from flask_jwt_extended import  create_access_token  
 
-from app.services.register_service import validate_request
+from app.services.register_login_service import validate_request
 from app.models.user_model import UserModel  
 
 from werkzeug.exceptions import NotFound
@@ -53,7 +53,7 @@ def get_user_all():
 
     return jsonify(all_users), HTTPStatus.OK
 
-def get_user_by_email(email):
+def get_one_user():
 
     try:
         user = UserModel.query.filter_by(email=email).first()
