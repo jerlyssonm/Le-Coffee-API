@@ -22,4 +22,4 @@ class FeedbackModel(db.Model):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
 
     user = relationship("UserModel", back_populates="feedback")
-    product = relationship("ProductModel", back_populates="feedback")
+    product = relationship("ProductModel", back_populates="feedbacks")

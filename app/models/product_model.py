@@ -8,6 +8,7 @@ from app.configs.database import db
 class ProductModel(db.Model):
     name: str
     price: float
+    # image: str
     description: str
     category: str
 
@@ -15,6 +16,7 @@ class ProductModel(db.Model):
 
     product_id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
+    # image =  Column(String, nullable=False)
     price = Column(Float, nullable=False)
     description = Column(Text)
     category = Column(String)
@@ -24,4 +26,4 @@ class ProductModel(db.Model):
     region_id = Column(Integer, ForeignKey("regions.id"))
 
     region = relationship("RegionModel", back_populates="products", uselist=False)
-    feedbacks = relationship("Feedback", back_populates="product")
+    feedbacks = relationship("FeedbackModel", back_populates="product")
