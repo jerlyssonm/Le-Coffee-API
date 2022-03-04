@@ -4,8 +4,6 @@ from app.models.region_model import RegionModel
 from app.services.region_service import check_region_data
 from app.configs.auth import auth
 
-from sqlalchemy.exc import IntegrityError
-
 from psycopg2.errors import NotNullViolation
 
 from werkzeug.exceptions import NotFound
@@ -20,16 +18,16 @@ def create_region():
   region_data = request.json
 
   try:
+    session = current_app.db.session
+    
     region_data = check_region_data(region_data)
 
     new_region = RegionModel(**region_data)
 
-    return jsonify(new_region), 
+    session.add(new_region)
+    session.commit()
 
-  except IntegrityError as err:
-    name = region_data["name"]
-
-    return jsonify(f"{name.title()} already exists!"), 409
+    return jsonify(new_region), 201
 
   except NotNullViolation as err:
     return jsonify(err.args[0]), 400
@@ -51,19 +49,24 @@ def delete_region(region_id: int):
     session.delete(region_to_delete)
     session.commit()
 
+    return jsonify(), 204
+
   except NotFound:
     return jsonify({"msg": "region not found"}), 404
 
 @auth.login_required
 def modify_region(region_id: int):
-  region_data = request.json
+  region_data = dict(request.json)
 
   try:
     session = current_app.db.session
 
-    check_region_data(region_data)
+    region_data = check_region_data(region_data, check_missing_keys = False)
 
     region = RegionModel.query.get_or_404(region_id)  
+
+    for key, value in region_data.items():
+      setattr(region, key, value)
 
     session.add(region)
     session.commit()
