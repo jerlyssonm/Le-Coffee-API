@@ -3,16 +3,16 @@ from dataclasses import dataclass
 from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
 
-# @dataclass
+from sqlalchemy.dialects.postgresql import UUID
+
+@dataclass
 class AddressModel(db.Model):
-    # address_id: int
-    # street: str
-    # number: str
-    # city: str
-    # state: str
-    # country: str
-    # cep: str
-    # user_id: int
+    street: str
+    number: str
+    city: str
+    state: str
+    country: str
+    cep: str
 
     __tablename__ = "addresses"
 
@@ -20,9 +20,10 @@ class AddressModel(db.Model):
     street = Column(String, nullable=False)
     number = Column(String, nullable=False)
     city = Column(String, nullable=False)
+    state = Column(String, nullable=False)
     country = Column(String, nullable=False, default="Brasil")
     cep = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey('users.user_id'))
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.user_id'))
 
     user = relationship("UserModel", back_populates="address")
 
