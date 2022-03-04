@@ -22,7 +22,7 @@ class UserModel(db.Model):
     email = Column(String, nullable=False, unique=True)
     password_hash = Column(String, nullable=True)
 
-    address = relationship("AddressesModel", back_populates="user")
+    address = relationship("AddressModel", back_populates="user")
     feedback = relationship("FeedbackModel", back_populates="user")
     order = relationship("OrderModel", back_populates="user")
 
