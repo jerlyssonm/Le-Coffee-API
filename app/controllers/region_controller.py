@@ -15,7 +15,7 @@ def get_regions():
 
 @auth.login_required
 def create_region():
-  region_data = request.json
+  region_data = request.get_json()
 
   try:
     session = current_app.db.session
@@ -56,7 +56,7 @@ def delete_region(region_id: int):
 
 @auth.login_required
 def modify_region(region_id: int):
-  region_data = dict(request.json)
+  region_data = request.get_json()
 
   try:
     session = current_app.db.session
