@@ -26,19 +26,27 @@ def check_region_data(data: dict, check_missing_keys: bool = True):
       missing_keys.remove(key)
 
   if len(missing_keys) > 0 and check_missing_keys:
-    raise NotNullViolation({
-      "available_keys": valid_region.keys(),
+    error = {
+      "available_keys": ["name", "latitude", "longitude"],
       "missing_keys": missing_keys
-    })
+    }
+    raise NotNullViolation(error)
 
   if len(invalid_keys) > 0:
-    raise KeyError({
-      "available_keys": valid_region.keys(),
+    error = {
+      "available_keys": ["name", "latitude", "longitude"],
       "wrong_keys": invalid_keys
-    })
+    }
+    raise KeyError(error)
 
   if len(invalid_values) > 0:
-    raise ValueError({
-      "available_values": valid_region,
+    error = {
+      "available_values": {"name": "str", "latitude": "str", "longitude": "str"},
       "wrong_values": invalid_values
-    })
+    }
+    raise ValueError(error)
+
+  name = data["name"]
+  data["name"] = name.title()
+  
+  return data
