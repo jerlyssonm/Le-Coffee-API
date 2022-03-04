@@ -8,7 +8,7 @@ from app.configs.database import db
 class ProductModel(db.Model):
     name: str
     price: float
-    image: str
+    # image: str
     description: str
     category: str
 
@@ -16,7 +16,7 @@ class ProductModel(db.Model):
 
     product_id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
-    image =  Column(String, nullable=False)
+    # image =  Column(String, nullable=False)
     price = Column(Float, nullable=False)
     description = Column(Text)
     category = Column(String)
