@@ -54,7 +54,7 @@ def get_product_by_id(product_id):
     return jsonify(filtered_product), HTTPStatus.OK
 
 
-def patch_product_by_id(product_id):
+def update_product(product_id):
     session: Session = current_app.db.session
 
     patch_product: ProductModel = ProductModel.query.get(product_id)
@@ -72,7 +72,7 @@ def patch_product_by_id(product_id):
     return "", HTTPStatus.OK
 
 
-def delete_product_by_id(product_id):
+def delete_product(product_id):
     session: Session = current_app.db.session
 
     deleted_product: ProductModel = ProductModel.query.get(product_id)
