@@ -1,9 +1,9 @@
-from email.mime import base
 from http import HTTPStatus
 
 from flask import jsonify, request
 from sqlalchemy import JSON
 from sqlalchemy.orm import Session
+from werkzeug.exceptions import NotFound
 
 from app.configs.database import db
 from app.models.address_model import AddressModel
@@ -42,6 +42,17 @@ def get_records():
     records = records.paginate(page, per_page)
 
     return jsonify(records.items), HTTPStatus.OK
+
+def get_record_by_id(address_id: int):
+    session: Session = db.session
+    base_query = session.query(AddressModel)
+
+    try: 
+        record = base_query.filter_by(address_id=address_id).first_or404(description="address not found")
+    except NotFound as e:
+        return {"error": e.description}, HTTPStatus.NOT_FOUND
+    
+    return jsonify(record), HTTPStatus.OK
 
 
 def delete_record(address_id: int):
