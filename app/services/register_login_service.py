@@ -1,12 +1,16 @@
 from os import getenv
 from werkzeug.exceptions import BadRequest
 
-def validate_request(request_data: dict):
-    valid_keys = set(getenv('ADM_KEYS').split(","))
-    wrong_keys = set(request_data.keys()) - valid_keys
-    wrong_values_type = [ value for value in request_data.values() if type(value) != str ]
-    
-    if len(request_data) < 3:
+
+def validate_request(request_data: dict, type_login: bool = False):
+    valid_keys = valid_keys = set(getenv("REGISTER_KEYS").split(","))
+    allowed_number_of_keys_ = 3 
+
+    if type_login:
+        valid_keys = set(getenv("LOGIN_KEYS").split(","))
+        allowed_number_of_keys_ = 2
+
+    if len(request_data) < allowed_number_of_keys_:
         missing_keys = valid_keys - set(request_data.keys())
         error_description = {"missing keys": list(missing_keys)}
 
@@ -15,6 +19,8 @@ def validate_request(request_data: dict):
 
         raise BadRequest(description=error_description)
 
+    wrong_keys = set(request_data.keys()) - valid_keys
+
     if wrong_keys:
         error_description = {"wrong keys": list(wrong_keys)}
 
@@ -22,6 +28,8 @@ def validate_request(request_data: dict):
             error_description = {"wrong key": list(wrong_keys)[0]}
 
         raise BadRequest(description=error_description)
+
+    wrong_values_type = [value for value in request_data.values() if type(value) != str]
 
     if wrong_values_type:
         raise BadRequest(
