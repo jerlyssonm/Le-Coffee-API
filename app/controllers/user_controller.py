@@ -6,7 +6,6 @@ from flask_jwt_extended import  create_access_token
 
 from app.services.register_service import validate_request
 from app.models.user_model import UserModel  
-from app.models.product_model import ProductModel
 
 from werkzeug.exceptions import NotFound
 
@@ -48,18 +47,18 @@ def signin():
     user["token"] = access_token
     return jsonify(user), HTTPStatus.OK
     
-def get_product_all():
+def get_user_all():
 
-    all_products = ProductModel.query.all()
+    all_users = UserModel.query.all()
 
-    return jsonify(all_products), HTTPStatus.OK
+    return jsonify(all_users), HTTPStatus.OK
 
-def get_product_by_id(id):
+def get__by_id(email):
 
     try:
-        product = ProductModel.query.get_or_404(id)
+        user = UserModel.query.filter_by(email=email).first()
 
-        return jsonify(product),HTTPStatus.OK
+        return jsonify(user),HTTPStatus.OK
         
     except NotFound:
         return {"message": "Product NotFound"},HTTPStatus.NOT_FOUND
