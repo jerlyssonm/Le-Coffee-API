@@ -3,7 +3,7 @@ from flask import current_app, request, jsonify
 from http import HTTPStatus
 from app.models.admin_model import AdminModel
 from app.configs.auth import auth
-from app.services.register_service import validate_request
+from app.services.register_login_service import validate_request
 
 
 def signup():
