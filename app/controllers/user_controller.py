@@ -53,7 +53,7 @@ def get_user_all():
 
     return jsonify(all_users), HTTPStatus.OK
 
-def get__by_id(email):
+def get_by_id(email):
 
     try:
         user = UserModel.query.filter_by(email=email).first()
