@@ -20,11 +20,3 @@ class RegionModel(db.Model):
   longitude = Column(String, nullable = False)
 
   products = relationship("ProductModel", back_populates = "region")
-
-  @property
-  def name(self):
-    return self.name
-
-  @name.setter
-  def name(self, given_name: str):
-    self.name = given_name.title()
