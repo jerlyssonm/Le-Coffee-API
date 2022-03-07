@@ -4,8 +4,8 @@ from app.models.admin_model import AdminModel
 auth = HTTPTokenAuth()
 
 @auth.verify_token
-def verify_token(api_key: str):
-    user = AdminModel.query.filter_by(api_key=api_key).first()
+def verify_token(adm_key: str):
+    user = AdminModel.query.filter_by(adm_key=adm_key).first()
 
     return user
     
