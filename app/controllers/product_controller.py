@@ -1,5 +1,4 @@
 import re
-from black import err
 from flask import current_app, request, jsonify
 from http import HTTPStatus
 from sqlalchemy.orm.session import Session
