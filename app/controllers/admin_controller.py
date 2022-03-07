@@ -35,14 +35,14 @@ def signup():
 def signin():
     admin_data =  request.get_json()
 
-    vaalidate_login = validate_request(admin_data, type_login=True)
+    validate_login = validate_request(admin_data, type_login=True)
     
-    admin: AdminModel = AdminModel.query.filter_by(email = admin_data['email']).first()
+    admin: AdminModel = AdminModel.query.filter_by(email = validate_login['email']).first()
 
     if not admin:
         return {"error": "email not found"}, HTTPStatus.UNAUTHORIZED
     
-    if not admin.verify_password(admin_data['password']):
+    if not admin.verify_password(validate_login['password']):
         return {"error": "email and password missmatch"}, HTTPStatus.UNAUTHORIZED
 
 
