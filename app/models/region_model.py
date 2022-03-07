@@ -19,4 +19,4 @@ class RegionModel(db.Model):
   latitude = Column(String, nullable = False)
   longitude = Column(String, nullable = False)
 
-  product = relationship("ProductModel", back_populates = "region")
+  products = relationship("ProductModel", back_populates = "region")
