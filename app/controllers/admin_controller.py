@@ -48,4 +48,6 @@ def signin():
 
 
 
-# CRIAR FUNÇÕES QUE O ADM PODERÁ UTILIZAR
+
+
+
