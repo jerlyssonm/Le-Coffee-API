@@ -4,24 +4,37 @@ from http import HTTPStatus
 from sqlalchemy.orm.session import Session
 from app.models.product_model import ProductModel
 from sqlalchemy.exc import IntegrityError
-
+from psycopg2.errors import UniqueViolation
+from werkzeug.exceptions import BadRequest
+from app.models.region_model import RegionModel
+from app.services.product_service import validate_product
 
 def create_product():
     try:
         session: Session = current_app.db.session
         data = request.get_json()
 
-        region = data.pop("region")
+        validated_product = validate_product(data)
 
-        product = ProductModel(**data)
+        request_region = validated_product.pop("region")
+
+        product = ProductModel(**validated_product)
+
+        region: RegionModel = RegionModel.query.filter_by(name=request_region).first()
+
+        product.region_id = region.id
 
         session.add(product)
         session.commit()
 
         return jsonify(product), HTTPStatus.CREATED
 
-    except IntegrityError:
-        return {"error": "Product name already exists"}, HTTPStatus.CONFLICT
+    except BadRequest as error:
+        return error.description, error.code
+
+    except IntegrityError as error:
+        if isinstance(error.orig, UniqueViolation):
+            return {"error": "Product name already exists"}, HTTPStatus.CONFLICT
 
 
 def get_all_products():
