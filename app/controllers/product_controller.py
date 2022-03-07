@@ -16,12 +16,6 @@ def create_product():
 
         validated_product = validate_product(data)
 
-        if not re.fullmatch(
-            "^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$",
-            validated_product["latitude"],
-        ):
-            return {"error": "err"}
-
         request_region = validated_product.pop("region")
 
         product = ProductModel(**validated_product)
