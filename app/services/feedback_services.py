@@ -4,6 +4,10 @@ from werkzeug.exceptions import BadRequest
 def validate_feedback(request_data: dict):
     valid_keys = set(["text", "rating"])
     allowed_number_of_keys_ = 2
+    
+    if not isinstance(request_data["text"], str):
+        error_description = {"wrong value": request_data["text"]}
+        raise BadRequest(description=error_description)
 
     if len(request_data) < allowed_number_of_keys_:
         missing_keys = valid_keys - set(request_data.keys())
