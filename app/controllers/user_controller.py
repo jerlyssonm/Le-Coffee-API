@@ -75,10 +75,7 @@ def update_user():
     user_on = get_jwt_identity()
     update_data = request.get_json()
 
-    password_to_hash = update_data.pop("password")
-
-    user:UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
-    user.password = password_to_hash
+    user:UserModel = UserModel.query.get(user_on["user_id"])
 
     for key, value in update_data.items():
         setattr(user, key, value)
@@ -93,7 +90,10 @@ def delete_user():
     session = current_app.db.session
     user_on = get_jwt_identity()
 
-    user:UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
+    user:UserModel = UserModel.query.get(user_on["user_id"])
+    if not user:
+        raise NotFound
+
     session.delete(user)
     session.commit()
 
