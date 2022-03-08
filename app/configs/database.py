@@ -15,4 +15,4 @@ def init_app(app: Flask):
     from app.models.product_order_model import products_orders
     from app.models.address_model import AddressModel
     from app.models.feedback_model import FeedbackModel
-
+    from app.models.chat_model import ChatModel

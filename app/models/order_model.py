@@ -23,3 +23,5 @@ class OrderModel(db.Model):
 
     user = relationship("UserModel", back_populates="order")
     product = relationship("ProductModel", secondary="products_orders")
+
+    chat = relationship("ChatModel")
