@@ -57,6 +57,25 @@ def get_all_feedbacks():
 
     return jsonify(feedbacks.items), HTTPStatus.OK
 
+def get_product_feedbacks(product_id: int):
+    session: Session = db.session
+    base_query = session.query(FeedbackModel)
+
+    try:
+        product: ProductModel = ProductModel.query.filter_by(product_id=product_id).first_or_404(
+            description="Product not found"
+        )
+
+        if not product:
+            return {"error_message": "Product not found"}
+
+        product_feedbacks = base_query.filter_by(product_id=product.product_id).all()
+
+    except NotFound as error:
+        return {"error_message": error.description}, error.code
+
+    return jsonify(product_feedbacks), HTTPStatus.OK
+
 
 def get_feedback_by_id(feedback_id: int):
     session: Session = db.session
@@ -64,7 +83,7 @@ def get_feedback_by_id(feedback_id: int):
 
     try:
         feedback = base_query.filter_by(feedback_id=feedback_id).first_or_404(
-            description="feedback not found"
+            description="Feedback not found"
         )
 
     except NotFound as error:
@@ -83,7 +102,7 @@ def update_feedback(feedback_id: int):
     to_update = base_query.get(feedback_id)
 
     if not to_update:
-        return {"error": "feedback not found"}, HTTPStatus.NOT_FOUND
+        return {"error_message": "Feedback not found"}, HTTPStatus.NOT_FOUND
 
     for key, value in data.items():
         setattr(to_update, key, value)
@@ -101,7 +120,7 @@ def delete_feedback(feedback_id: int):
     to_delete = base_query.get(feedback_id)
 
     if not to_delete:
-        return jsonify({"error": "feedback not found"}), HTTPStatus.BAD_REQUEST
+        return jsonify({"error_message": "feedback not found"}), HTTPStatus.BAD_REQUEST
 
     session.delete(to_delete)
     session.commit()
