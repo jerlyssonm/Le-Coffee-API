@@ -10,13 +10,6 @@ from app.services.product_service import validate_product
 from app.configs.auth import auth
 
 
-@auth.error_handler
-def unauthorized_handler(status):
-    return {
-        "error_message": "Unauthorized Access, missing or incorrect auth key"
-    }, status
-
-
 @auth.login_required
 def create_product():
     try:
