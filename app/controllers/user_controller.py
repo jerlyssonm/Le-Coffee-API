@@ -65,7 +65,7 @@ def get_one_user():
         return jsonify(user),HTTPStatus.OK
         
     except NotFound:
-        return {"message": "Product NotFound"},HTTPStatus.NOT_FOUND
+        return {"message": "User not found"},HTTPStatus.NOT_FOUND
      
 
 @jwt_required()
