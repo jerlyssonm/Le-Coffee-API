@@ -50,7 +50,7 @@ def get_record_by_id(address_id: int):
     base_query = session.query(AddressModel)
 
     try: 
-        record = base_query.filter_by(address_id=address_id).first_or404(description="address not found")
+        record = base_query.filter_by(address_id=address_id).first_or_404(description="address not found")
     except NotFound as e:
         return {"error": e.description}, HTTPStatus.NOT_FOUND
     
