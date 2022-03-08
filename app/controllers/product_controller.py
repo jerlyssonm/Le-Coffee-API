@@ -1,4 +1,3 @@
-import re
 from flask import current_app, request, jsonify
 from http import HTTPStatus
 from sqlalchemy.orm.session import Session
@@ -8,7 +7,17 @@ from psycopg2.errors import UniqueViolation
 from werkzeug.exceptions import BadRequest
 from app.models.region_model import RegionModel
 from app.services.product_service import validate_product
+from app.configs.auth import auth
 
+
+@auth.error_handler
+def unauthorized_handler(status):
+    return {
+        "error_message": "Unauthorized Access, missing or incorrect auth key"
+    }, status
+
+
+@auth.login_required
 def create_product():
     try:
         session: Session = current_app.db.session
@@ -61,6 +70,7 @@ def get_product_by_id(product_id):
     return jsonify(filtered_product), HTTPStatus.OK
 
 
+@auth.login_required
 def update_product(product_id):
     session: Session = current_app.db.session
 
@@ -79,6 +89,7 @@ def update_product(product_id):
     return "", HTTPStatus.OK
 
 
+@auth.login_required
 def delete_product(product_id):
     session: Session = current_app.db.session
 
