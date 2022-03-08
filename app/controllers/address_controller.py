@@ -4,23 +4,32 @@ from http import HTTPStatus
 from flask import jsonify, request
 from sqlalchemy import JSON
 from sqlalchemy.orm import Session
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 
+from app.configs.auth import auth
 from app.configs.database import db
 from app.models.address_model import AddressModel
+from app.services.address_service import check_address_data
 
 
+@auth.login_required
 def create_record():
-    data = request.get_json()
     session: Session = db.session
+    data = request.get_json()
 
-    record = AddressModel(**data)
-    session.add(record)
-    session.commit()
+    try:
+        validated_data = check_address_data(data)
+
+        record = AddressModel(**validated_data)
+        session.add(record)
+        session.commit()
+    except BadRequest as error:
+        return {"error": error.description}
 
     return jsonify(record), HTTPStatus.CREATED
 
 
+@auth.login_required
 def get_records():
     session: Session = db.session
     base_query = session.query(AddressModel)
@@ -45,6 +54,7 @@ def get_records():
     return jsonify(records.items), HTTPStatus.OK
 
 
+@auth.login_required
 def get_record_by_id(address_id: int):
     session: Session = db.session
     base_query = session.query(AddressModel)
@@ -57,6 +67,7 @@ def get_record_by_id(address_id: int):
     return jsonify(record), HTTPStatus.OK
 
 
+@auth.login_required
 def delete_record(address_id: int):
     session: Session = db.session
     base_query = session.query(AddressModel)
@@ -72,10 +83,11 @@ def delete_record(address_id: int):
     return "", HTTPStatus.NO_CONTENT
 
 
+@auth.login_required
 def update_record(address_id: int):
-    data = request.get_json()
-
     session: Session = db.session
+
+    data = request.get_json()
 
     base_query = session.query(AddressModel)
 
