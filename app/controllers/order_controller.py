@@ -73,15 +73,20 @@ def create_order():
         "user_id": order.user_id,
     }
 
+@jwt_required()
 def get_all_orders():
     session: Session = db.session
-    base_query = session.query(OrderModel)
+
+    get_jwt_user_id = get_jwt_identity()
+    current_user_id = get_jwt_user_id["user_id"]
+
+    base_query = session.query(OrderModel).filter(OrderModel.user_id == current_user_id)
 
     if not base_query:
         return {"orders": []}
 
     page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("perpage", 3, type=int)
+    per_page = request.args.get("perpage", 10, type=int)
     orders = base_query.order_by(OrderModel.order_id).paginate(page, per_page)
 
     return jsonify(orders.items), 200
