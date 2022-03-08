@@ -34,8 +34,8 @@ def signup():
 def signin():
     data = request.get_json()
     validate_data = validate_request(data, type_login=True)
-    print(validate_data)
-    user = UserModel.query.filter_by(email=validate_data["email"]).first()
+
+    user: UserModel = UserModel.query.filter_by(email=validate_data["email"]).first()
 
     if not user:
         return {"message": "User not found"}, HTTPStatus.NOT_FOUND
@@ -45,7 +45,7 @@ def signin():
 
     user.verify_password(validate_data["password"])
     access_token = create_access_token(identity=user)
-    # user["token"] = access_token
+
     return {"token": access_token}, HTTPStatus.OK
     
 @jwt_required()
@@ -65,5 +65,36 @@ def get_one_user():
         return jsonify(user),HTTPStatus.OK
         
     except NotFound:
-        return {"message": "Product NotFound"},HTTPStatus.NOT_FOUND
+        return {"message": "User not found"},HTTPStatus.NOT_FOUND
      
+
+@jwt_required()
+def update_user():
+    session = current_app.db.session
+
+    user_on = get_jwt_identity()
+    update_data = request.get_json()
+
+    password_to_hash = update_data.pop("password")
+
+    user:UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
+    user.password = password_to_hash
+
+    for key, value in update_data.items():
+        setattr(user, key, value)
+
+    session.add(user)
+    session.commit()
+
+    return '', HTTPStatus.NO_CONTENT
+    
+@jwt_required()
+def delete_user():
+    session = current_app.db.session
+    user_on = get_jwt_identity()
+
+    user:UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
+    session.delete(user)
+    session.commit()
+
+    return '', HTTPStatus.NO_CONTENT
