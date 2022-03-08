@@ -1,4 +1,5 @@
 from psycopg2.errors import NotNullViolation
+import re
 
 def check_region_data(data: dict, check_missing_keys: bool = True):
   """
@@ -46,7 +47,26 @@ def check_region_data(data: dict, check_missing_keys: bool = True):
     }
     raise ValueError(error)
 
-  name = data["name"]
+
+  latitude: str = data["latitude"]
+  match_rule_latitude = r"^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$"
+  match_response_latitude = re.fullmatch(match_rule_latitude, latitude)
+  if match_response_latitude is None:
+    raise ValueError({
+      "msg": "latitude is invalid",
+      "latitude": latitude
+    })
+
+  longitude: str = data["longitude"]
+  match_rule_longitude = r"^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$"
+  match_response_longitude = re.fullmatch(match_rule_longitude, longitude)
+  if match_response_longitude is None:
+    raise ValueError({
+      "msg": "longitude is invalid",
+      "longitude": longitude
+    })
+
+  name: str = data["name"]
   data["name"] = name.title()
   
   return data
