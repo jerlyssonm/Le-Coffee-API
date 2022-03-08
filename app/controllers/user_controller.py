@@ -90,7 +90,10 @@ def delete_user():
     session = current_app.db.session
     user_on = get_jwt_identity()
 
-    user:UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
+    user:UserModel = UserModel.query.get(user_on["user_id"])
+    if not user:
+        raise NotFound
+
     session.delete(user)
     session.commit()
 
