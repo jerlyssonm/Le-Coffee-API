@@ -13,4 +13,4 @@ class MessageModel(db.Model):
     text = Column(String, nullable=False)
     sender_id = Column(Integer, nullable=False)
 
-    chat_id = Column(Integer, ForeignKey('chat.chat_id'))
+    chat_id = Column(Integer, ForeignKey('chats.chat_id'))
