@@ -1,8 +1,6 @@
 from werkzeug.exceptions import BadRequest
 
 
-obj = {"text": "é noiz cachorro","rating": "2"}
-
 def validate_feedback(request_data: dict):
     valid_keys = set(["text", "rating"])
     allowed_number_of_keys_ = 2
