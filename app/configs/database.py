@@ -16,3 +16,4 @@ def init_app(app: Flask):
     from app.models.address_model import AddressModel
     from app.models.feedback_model import FeedbackModel
     from app.models.chat_model import ChatModel
+    from app.models.message_model import MessageModel
