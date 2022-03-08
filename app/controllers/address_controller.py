@@ -1,35 +1,42 @@
-from email.mime import base
 from http import HTTPStatus
 
 from flask import jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import JSON
 from sqlalchemy.orm import Session
 from werkzeug.exceptions import NotFound, BadRequest
 
-from app.configs.auth import auth
 from app.configs.database import db
 from app.models.address_model import AddressModel
+from app.models.user_model import UserModel
 from app.services.address_service import check_address_data
 
 
-@auth.login_required
+@jwt_required()
 def create_record():
     session: Session = db.session
     data = request.get_json()
+    user_on = get_jwt_identity()
 
     try:
         validated_data = check_address_data(data)
 
+        user: UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
+
         record = AddressModel(**validated_data)
+
+        record.user_id = user.user_id
+
         session.add(record)
         session.commit()
+
     except BadRequest as error:
         return {"error": error.description}
 
     return jsonify(record), HTTPStatus.CREATED
 
 
-@auth.login_required
+@jwt_required()
 def get_records():
     session: Session = db.session
     base_query = session.query(AddressModel)
@@ -54,7 +61,7 @@ def get_records():
     return jsonify(records.items), HTTPStatus.OK
 
 
-@auth.login_required
+@jwt_required()
 def get_record_by_id(address_id: int):
     session: Session = db.session
     base_query = session.query(AddressModel)
@@ -67,7 +74,7 @@ def get_record_by_id(address_id: int):
     return jsonify(record), HTTPStatus.OK
 
 
-@auth.login_required
+@jwt_required()
 def delete_record(address_id: int):
     session: Session = db.session
     base_query = session.query(AddressModel)
@@ -83,7 +90,7 @@ def delete_record(address_id: int):
     return "", HTTPStatus.NO_CONTENT
 
 
-@auth.login_required
+@jwt_required()
 def update_record(address_id: int):
     session: Session = db.session
 
