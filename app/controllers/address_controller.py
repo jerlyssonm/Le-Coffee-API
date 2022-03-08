@@ -10,7 +10,7 @@ from app.configs.database import db
 from app.models.address_model import AddressModel
 
 
-def create_record():
+def create_address():
     data = request.get_json()
     session: Session = db.session
 
@@ -21,7 +21,7 @@ def create_record():
     return jsonify(record), HTTPStatus.CREATED
 
 
-def get_records():
+def get_all_addresses():
     session: Session = db.session
     base_query = session.query(AddressModel)
 
@@ -39,40 +39,27 @@ def get_records():
         records = base_query.filter(**query_params).order_by(AddressModel.address_id)
     else:
         records = base_query.order_by(AddressModel.address_id)
-    
+
     records = records.paginate(page, per_page)
 
     return jsonify(records.items), HTTPStatus.OK
 
 
-def get_record_by_id(address_id: int):
+def get_address_by_id(address_id: int):
     session: Session = db.session
     base_query = session.query(AddressModel)
 
-    try: 
-        record = base_query.filter_by(address_id=address_id).first_or_404(description="address not found")
+    try:
+        record = base_query.filter_by(address_id=address_id).first_or_404(
+            description="address not found"
+        )
     except NotFound as e:
         return {"error": e.description}, HTTPStatus.NOT_FOUND
-    
+
     return jsonify(record), HTTPStatus.OK
 
 
-def delete_record(address_id: int):
-    session: Session = db.session
-    base_query = session.query(AddressModel)
-
-    record = base_query.get(address_id)
-
-    if not record:
-        return jsonify({"error": "address not found"}), HTTPStatus.BAD_REQUEST
-    
-    session.delete(record)
-    session.commit()
-    
-    return "", HTTPStatus.NO_CONTENT
-
-
-def update_record(address_id: int):
+def update_address(address_id: int):
     data = request.get_json()
 
     session: Session = db.session
@@ -83,11 +70,26 @@ def update_record(address_id: int):
 
     if not record:
         return {"error": "Address not found"}, HTTPStatus.NOT_FOUND
-    
+
     for key, value in data.items():
         setattr(record, key, value)
-    
+
     session.add(record)
     session.commit()
 
     return jsonify(record), HTTPStatus.OK
+
+
+def delete_address(address_id: int):
+    session: Session = db.session
+    base_query = session.query(AddressModel)
+
+    record = base_query.get(address_id)
+
+    if not record:
+        return jsonify({"error": "address not found"}), HTTPStatus.BAD_REQUEST
+
+    session.delete(record)
+    session.commit()
+
+    return "", HTTPStatus.NO_CONTENT
