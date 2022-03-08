@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import UUID
 
 @dataclass
 class OrderModel(db.Model):
-    id: int
+    order_id: int
     status: bool
     date: datetime.now()
     user_id: int
@@ -22,4 +22,4 @@ class OrderModel(db.Model):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
 
     user = relationship("UserModel", back_populates="order")
-    product = relationship("ProductModel", secondary="products_orders")
+    products = relationship("ProductsOrderModel")
