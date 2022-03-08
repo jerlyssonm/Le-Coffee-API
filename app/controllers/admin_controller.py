@@ -6,10 +6,11 @@ from app.configs.auth import auth
 from app.services.register_login_service import validate_request
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import BadRequest
 
 def signup():
     try:
-        session = current_app.db.session
+        session: Session = current_app.db.session
 
         admin_data = request.get_json()
 
@@ -29,22 +30,28 @@ def signup():
 
         return jsonify(new_admin), HTTPStatus.CREATED
 
+    except BadRequest as error:
+        return error.description, error.code
+
     except IntegrityError:
         return {"error": "Admin already exists"}, HTTPStatus.CONFLICT
 
 def signin():
-    admin_data =  request.get_json()
+    try:
+        admin_data =  request.get_json()
 
-    validate_login = validate_request(admin_data, type_login=True)
-    
-    admin: AdminModel = AdminModel.query.filter_by(email = validate_login['email']).first()
+        validate_login = validate_request(admin_data, type_login=True)
+        
+        admin: AdminModel = AdminModel.query.filter_by(email = validate_login['email']).first()
 
-    if not admin:
-        return {"error": "email not found"}, HTTPStatus.UNAUTHORIZED
-    
-    if not admin.verify_password(validate_login['password']):
-        return {"error": "email and password missmatch"}, HTTPStatus.UNAUTHORIZED
+        if not admin:
+            return {"error": "email not found"}, HTTPStatus.UNAUTHORIZED
+        
+        if not admin.verify_password(validate_login['password']):
+            return {"error": "email and password missmatch"}, HTTPStatus.UNAUTHORIZED
 
+    except BadRequest as error:
+        return error.description, error.code
 
     return jsonify({"admin_key": admin.adm_key}), HTTPStatus.OK
 
