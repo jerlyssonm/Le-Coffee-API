@@ -79,6 +79,7 @@ def create_order():
         "user_id": order.user_id,
     }
 
+
 @auth.login_required
 def get_all_orders():
     session: Session = db.session
@@ -92,6 +93,7 @@ def get_all_orders():
     orders = base_query.order_by(OrderModel.order_id).paginate(page, per_page)
 
     return jsonify(orders.items), 200
+
 
 @jwt_required()
 def get_orders_by_user():
@@ -120,6 +122,7 @@ def get_order_by_id(order_id: int):
         return {"msg": "Order not found"}, HTTPStatus.NOT_FOUND
 
     return jsonify(order_filtered), HTTPStatus.OK
+
 
 @jwt_required()
 def get_order_products(order_id: int):
