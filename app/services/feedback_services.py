@@ -1,29 +1,32 @@
+from werkzeug.exceptions import BadRequest
 
 
-def format_feedback(feedback):
-    valid_body = {"text" : "class 'str'", "rating": "class 'str'"}
-    out_feedback = {}
-    out_feedback["text"] = feedback["text"]
-    out_feedback["rating"] = feedback['rating']
-    try:
-        for value in out_feedback.values():
-            if not type(value) is str:
-                raise TypeError
-        out_feedback["text"] = out_feedback["text"].capitalize()
-        out_feedback["rating"] = float(out_feedback["rating"])
-        if out_feedback["rating"] < 1:
-            out_feedback["rating"] = 0.0
-        if out_feedback["rating"] > 5:
-            out_feedback["rating"] = 5.0
+obj = {"text": "é noiz cachorro","rating": "2"}
 
-        return out_feedback
-    except KeyError :
-        return {
-            "expecte_keys": [key for key in valid_body.keys()] ,
-            "received": [key for key in feedback.keys()]
-        }
-    except TypeError:
-        return {
-            "expecte_types": [value for value in valid_body.values()],
-            "received": [type(value) for value in feedback.values()]
-        }
+def validate_feedback(request_data: dict):
+    valid_keys = set(["text", "rating"])
+    allowed_number_of_keys_ = 2
+
+    if len(request_data) < allowed_number_of_keys_:
+        missing_keys = valid_keys - set(request_data.keys())
+        error_description = {"missing keys": list(missing_keys)}
+    
+        if len(missing_keys) == 1:
+            error_description = {"missing key": list(missing_keys)[0]}
+        
+        raise BadRequest(description=error_description)
+
+    wrong_keys = set(request_data) - valid_keys
+
+    if wrong_keys:
+        error_description = {"wrong key": list(wrong_keys)}
+
+        if len(wrong_keys) == 1:
+            error_description = {"wrong key": list(wrong_keys)}
+
+        raise BadRequest(description=error_description)
+    formatted_feedback = {
+        "text": request_data["text"].capitalize(),
+        "rating": float(request_data["rating"])
+    }
+    return formatted_feedback
