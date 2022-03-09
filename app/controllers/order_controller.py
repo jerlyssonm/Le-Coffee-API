@@ -126,7 +126,7 @@ def get_orders_by_user():
     per_page = request.args.get("perpage", 10, type=int)
     orders = base_query.order_by(OrderModel.order_id).paginate(page, per_page)
 
-    return jsonify(orders.items), 200
+    return jsonify(orders.items), HTTPStatus.OK
 
 
 @jwt_required()

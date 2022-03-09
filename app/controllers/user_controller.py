@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from flask import jsonify, request,current_app
 from sqlalchemy.exc import IntegrityError
+from app.services.user_admin_service import check_request_update
 
 from flask_jwt_extended import  create_access_token,jwt_required, get_jwt_identity
 
@@ -9,7 +10,7 @@ from app.models.user_model import UserModel
 from app.configs.auth import auth
 
 from werkzeug.exceptions import NotFound
-
+from werkzeug.exceptions import BadRequest
 
 def signup():
     session = current_app.db.session
@@ -71,21 +72,30 @@ def get_one_user():
 
 @jwt_required()
 def update_user():
-    session = current_app.db.session
+    try:
+        session = current_app.db.session
 
-    user_on = get_jwt_identity()
-    update_data = request.get_json()
+        user_on = get_jwt_identity()
+        update_data = request.get_json()
 
-    user:UserModel = UserModel.query.get(user_on["user_id"])
 
-    for key, value in update_data.items():
-        setattr(user, key, value)
+        valid_request = check_request_update(update_data)
 
-    session.add(user)
-    session.commit()
+        user:UserModel = UserModel.query.get(user_on["user_id"])
 
-    return '', HTTPStatus.NO_CONTENT
-    
+        for key, value in valid_request.items():
+            setattr(user, key, value)
+
+        session.add(user)
+        session.commit()
+
+        return '', HTTPStatus.NO_CONTENT
+
+    except BadRequest as e:
+        return e.description, e.code
+    except IntegrityError:
+        return {"error": "Admin already exists"}, HTTPStatus.CONFLICT   
+           
 @jwt_required()
 def delete_user():
     session = current_app.db.session
