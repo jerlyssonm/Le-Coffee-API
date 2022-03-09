@@ -1,10 +1,12 @@
 from os import getenv
 from werkzeug.exceptions import BadRequest
+import re
 
 def validate_product(request_data: dict):
     valid_keys = set(getenv("PRODUCT_KEYS").split(","))
     valid_categories = getenv("CATEGORY_TYPES").split(",")
     valid_regions = getenv("REGIONS").split(",")
+
     allowed_number_of_keys_ = 7
 
     if len(request_data) < allowed_number_of_keys_:
@@ -38,6 +40,35 @@ def validate_product(request_data: dict):
     
 
         raise BadRequest(description=error_description)
+
+    latitude: str = request_data["latitude"]
+    match_rule_latitude = r"^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$"
+    match_response_latitude = re.fullmatch(match_rule_latitude, latitude)
+
+    if match_response_latitude is None:
+        raise BadRequest({
+            "error_message": "latitude is invalid",
+            "valid_latitude": {
+            "max_value": "+90.000",
+            "min_value": "-90.00"
+            },
+            "invalid_latitude": latitude
+        })
+
+    longitude: str = request_data["longitude"]
+    match_rule_longitude = r"^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$"
+    match_response_longitude = re.fullmatch(match_rule_longitude, longitude)
+    
+    if match_response_longitude is None:
+        raise BadRequest({
+            "error_message": "longitude is invalid",
+            "valid_longitude": {
+                "max_value": "+180.000",
+                "min_value": "-180.000"
+            },
+            "invalid_longitude": longitude
+        })
+
 
     formatted_data = {
         'name': request_data['name'].title(),
