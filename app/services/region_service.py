@@ -1,7 +1,9 @@
-from psycopg2.errors import NotNullViolation
+from flask import current_app
 import re
 from os import getenv
 from werkzeug.exceptions import BadRequest
+
+from app.models.region_model import RegionModel
 
 
 def check_region_data(data: dict):
@@ -67,3 +69,20 @@ def check_region_data(data: dict):
         data["name"] = name.title()
 
     return data
+    
+def region_populate():
+    if not RegionModel.query.all():
+
+        region_coordinates = [
+        { "name": "Norte", "latitude": "-4.19802", "longitude": "-64.3398" },
+        { "name": "Nordeste", "latitude": "-5.86494", "longitude":"-40.57466"},
+        { "name": "Centro-Oeste", "latitude": "-16.71819","longitude": "-53.29242" },
+        { "name": "Sudeste", "latitude": "-21.03781", "longitude":"-45.71101" },
+        { "name": "Sul", "latitude": "-27.29441", "longitude":"-51.41195"}
+        ]
+
+        for data in region_coordinates:
+            region: RegionModel = RegionModel(**data)
+            current_app.db.session.add(region)
+        current_app.db.session.commit()
+
