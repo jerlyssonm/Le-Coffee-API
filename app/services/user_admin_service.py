@@ -2,7 +2,7 @@ from os import getenv
 from werkzeug.exceptions import BadRequest
 
 def check_request_update(request):
-    accepted_keys = set(getenv("ADMIN_KEYS").split(","))
+    accepted_keys = set(getenv("REGISTER_KEYS").split(","))
     request_keys = set(request.keys())
     wrong_keys = set(request) - accepted_keys
 
