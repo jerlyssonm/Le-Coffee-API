@@ -2,18 +2,20 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 @dataclass
 class MessageModel(db.Model):
     message_id: int
     text: str
     sender_id: str
-    chat_id: int
+    order_id: int
 
     __tablename__= 'messages'
 
     message_id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
     sender_id = Column(UUID(as_uuid=True), nullable=False)
+    order_id: int = Column(Integer, ForeignKey("orders.order_id"))
 
-    chat_id = Column(Integer, ForeignKey('chats.chat_id'))
+    order = relationship("OrderModel", back_populates = "message")
