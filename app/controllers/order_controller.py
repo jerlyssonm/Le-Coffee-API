@@ -5,7 +5,6 @@ from sqlalchemy.orm.session import Session
 from werkzeug.exceptions import NotFound
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.configs.auth import auth
-from app.exception.order_exception import InvalidKeysError
 from app.models.order_model import OrderModel
 from app.models.product_model import ProductModel
 from app.models.product_order_model import ProductsOrderModel
