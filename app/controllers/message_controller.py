@@ -20,12 +20,12 @@ def create_message():
 
     return jsonify(message), HTTPStatus.CREATED
 
-def get_message_by_chat(chat_id: int):
+def get_message_by_order(order_id: int):
     session: Session = db.session
     base_query = session.query(MessageModel)
 
     try:
-        message = MessageModel.query.filter_by(chat_id=chat_id).first()
+        message = MessageModel.query.filter_by(order_id=order_id).first()
 
         if not message:
             raise NotFound
@@ -33,7 +33,7 @@ def get_message_by_chat(chat_id: int):
     except NotFound as error:
         return {"error": "Messages not found in database."}, error.code
     
-    message_filtrer = base_query.filter_by(chat_id=chat_id).all()
+    message_filtrer = base_query.filter_by(order_id=order_id).all()
     
     return jsonify(message_filtrer), HTTPStatus.OK
 
