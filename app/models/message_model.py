@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 
+@dataclass
 class MessageModel(db.Model):
-    messages_id: int
+    message_id: int
     text: str
     sender_id: str
     chat_id: int
