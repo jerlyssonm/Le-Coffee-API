@@ -63,10 +63,10 @@ POST  BASE_URL /admin/login
 
 **Criar conta de usuario**
 ```
-POST  BASE_URL  /users/register
+POST  BASE_URL /users/register
 ```
 ***Entrada:***
-```json
+```
     {
 	    "name": "user",
 	    "email": "user@hotmail.com",
@@ -74,7 +74,7 @@ POST  BASE_URL  /users/register
     }
 ```
 ***Retorno: 201, CREATED***
-```json
+```
     {
 	    "user_id": "430e5ca8-ecab-4e79-bbe4-5838d99ec0f1",
 	    "name": "user",
@@ -89,14 +89,14 @@ POST  BASE_URL /users/login
 ```
 
 ***Entrada:***
-```json
+```
     {
 	    "email": "example@hotmail.com",
 	    "password": "123456789"
     }
 ```
 ***Retorno: 200, OK***
-```json
+```
 	{
 		"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0Njc5OTg4MSwianRpIjoiNGUzNjQxNzEtODc2OS00ZjNjLTkyNTEtMDk3ZjM3NjI1NmFhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoiNDMwZTVjYTgtZWNhYi00ZTc5LWJiZTQtNTgzOGQ5OWVjMGYxIiwibmFtZSI6Implcmx5c3NvbiIsImVtYWlsIjoiamVybHlzc29uQGhvdG1haWwuY29tIn0sIm5iZiI6MTY0Njc5OTg4MSwiZXhwIjoxNjQ2ODAwNzgxfQ.B0OML2tpaE3bLs5z7-RrOIhBGBjfG4mu9y38Ol0N7dc"
 	}
@@ -118,13 +118,13 @@ POST  BASE_URL /users/login
 GET BASE_URL /users
 ```
 ***Entrada***
-```json
+```
 {
 
 }
 ```
 ***Retorno: 200, OK***
-```json
+```
 [ ] ou uma lista com todos os usuarios
 ```
 **Registrar Produtos**
@@ -132,11 +132,11 @@ GET BASE_URL /users
 POST BASE_URL  /products
 ```
 ***Entrada:***
-```json
+```
 
 ```
 ***Retorno: 201,CREATE***
-```json
+```
 
 ```
 **atualizar Produtos**
@@ -148,7 +148,7 @@ PATCH  BASE_URL  /products/<int:product_id>
 DELETE  BASE_URL  /products/<int:product_id>
 ```
 ***Entrada***
-```json
+```
 ```
 ***Retorno: 204, NO CONTENT***
 </details>
@@ -167,7 +167,7 @@ PUT  BASE_URL  /users
 ```
 ***Entrada***
 voce pode mandar um valor ou todos para atualizar
-```json
+```
 {
 	"password": "example1"
 }
@@ -203,7 +203,7 @@ DELETE  BASE_URL  /users
 POST  BASE_URL  /feedbacks/<int:product_id>
 ```
 ***Entradas***
-```json
+```
 
 ```
 ***retorno: 201,CREATED***
