@@ -2,6 +2,8 @@ from http import HTTPStatus
 from flask import request, jsonify
 from app.configs.database import db
 from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import IntegrityError
+from psycopg2.errors import ForeignKeyViolation
 from werkzeug.exceptions import NotFound, BadRequest
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.configs.auth import auth
@@ -87,6 +89,10 @@ def create_order():
 
     except NotFound as error:
         return error.description, error.code
+
+    except IntegrityError as error:
+        if isinstance(error.orig, ForeignKeyViolation):
+            return { "error_message": "User not found for this autentication"  }
 
 
 @auth.login_required
