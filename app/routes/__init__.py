@@ -6,6 +6,8 @@ from app.routes.user_blueprint import bp_user
 from app.routes.region_blueprint import bp_region
 from app.routes.address_blueprint import bp_address
 from app.routes.order_blueprint import bp_order
+from app.routes.feedback_blueprint import bp_feedback
+from app.routes.message_blueprint import bp_message
 
 def init_app(app: Flask):
     app.register_blueprint(bp_admin)
@@ -14,3 +16,5 @@ def init_app(app: Flask):
     app.register_blueprint(bp_region)
     app.register_blueprint(bp_address) 
     app.register_blueprint(bp_order)
+    app.register_blueprint(bp_feedback)
+    app.register_blueprint(bp_message)

@@ -1,25 +1,40 @@
 from http import HTTPStatus
+from itertools import product
 
 from flask import jsonify, request
 from sqlalchemy.orm import Session
 from werkzeug.exceptions import NotFound
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app.configs.database import db
 from app.models.feedback_model import FeedbackModel
+from app.models.product_model import ProductModel
 
 
-def create_record():
+@jwt_required()
+def create_feedback(product_id: int):
     data = request.get_json()
+
     session: Session = db.session
 
-    record = FeedbackModel(**data)
-    session.add(record)
+    new_feedback = FeedbackModel(**data)
+
+    product: ProductModel = ProductModel.query.get(product_id)
+    current_user = get_jwt_identity()
+
+    if not product:
+        return {"error_message": "Product not found"}
+
+    new_feedback.product_id = product.product_id
+    new_feedback.user_id = current_user["user_id"]
+
+    session.add(new_feedback)
     session.commit()
 
-    return jsonify(record), HTTPStatus.CREATED
+    return jsonify(new_feedback), HTTPStatus.CREATED
 
 
-def get_records():
+def get_all_feedbacks():
     session: Session = db.session
     base_query = session.query(FeedbackModel)
 
@@ -34,58 +49,80 @@ def get_records():
     query_params.pop("per_page", None)
 
     if source or destination:
-        records = base_query.filter(**query_params).order_by(FeedbackModel.feedback_id)
+        feedbacks = base_query.filter(**query_params).order_by(FeedbackModel.feedback_id)
     else:
-        records = base_query.order_by(FeedbackModel.feedback_id)
-    
-    records = records.paginate(page, per_page)
+        feedbacks = base_query.order_by(FeedbackModel.feedback_id)
 
-    return jsonify(records.items), HTTPStatus.OK
+    feedbacks = feedbacks.paginate(page, per_page)
 
+    return jsonify(feedbacks.items), HTTPStatus.OK
 
-def get_record_by_id(feedback_id: int):
+def get_product_feedbacks(product_id: int):
     session: Session = db.session
     base_query = session.query(FeedbackModel)
 
-    try: 
-        record = base_query.filter_by(feedback_id=feedback_id).first_or404(description="feedback not found")
-    except NotFound as e:
-        return {"error": e.description}, HTTPStatus.NOT_FOUND
-    
-    return jsonify(record), HTTPStatus.OK
+    try:
+        product: ProductModel = ProductModel.query.filter_by(product_id=product_id).first_or_404(
+            description="Product not found"
+        )
+
+        if not product:
+            return {"error_message": "Product not found"}
+
+        product_feedbacks = base_query.filter_by(product_id=product.product_id).all()
+
+    except NotFound as error:
+        return {"error_message": error.description}, error.code
+
+    return jsonify(product_feedbacks), HTTPStatus.OK
 
 
-def delete_record(feedback_id: int):
+def get_feedback_by_id(feedback_id: int):
     session: Session = db.session
     base_query = session.query(FeedbackModel)
 
-    record = base_query.get(feedback_id)
+    try:
+        feedback = base_query.filter_by(feedback_id=feedback_id).first_or_404(
+            description="Feedback not found"
+        )
 
-    if not record:
-        return jsonify({"error": "feedback not found"}), HTTPStatus.BAD_REQUEST
-    
-    session.delete(record)
-    session.commit()
-    
-    return "", HTTPStatus.NO_CONTENT
+    except NotFound as error:
+        return {"error_message": error.description}, error.code
 
+    return jsonify(feedback), HTTPStatus.OK
 
-def update_record(feedback_id: int):
+@jwt_required()
+def update_feedback(feedback_id: int):
     data = request.get_json()
 
     session: Session = db.session
 
     base_query = session.query(FeedbackModel)
 
-    record = base_query.get(feedback_id)
+    to_update = base_query.get(feedback_id)
 
-    if not record:
-        return {"error": "feedback not found"}, HTTPStatus.NOT_FOUND
-    
+    if not to_update:
+        return {"error_message": "Feedback not found"}, HTTPStatus.NOT_FOUND
+
     for key, value in data.items():
-        setattr(record, key, value)
-    
-    session.add(record)
+        setattr(to_update, key, value)
+
+    session.add(to_update)
     session.commit()
 
-    return jsonify(record), HTTPStatus.OK
+    return jsonify(to_update), HTTPStatus.OK
+
+@jwt_required()
+def delete_feedback(feedback_id: int):
+    session: Session = db.session
+    base_query = session.query(FeedbackModel)
+
+    to_delete = base_query.get(feedback_id)
+
+    if not to_delete:
+        return jsonify({"error_message": "feedback not found"}), HTTPStatus.BAD_REQUEST
+
+    session.delete(to_delete)
+    session.commit()
+
+    return "", HTTPStatus.NO_CONTENT

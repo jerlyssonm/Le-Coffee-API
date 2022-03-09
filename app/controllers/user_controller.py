@@ -1,14 +1,16 @@
 from http import HTTPStatus
 from flask import jsonify, request,current_app
 from sqlalchemy.exc import IntegrityError
+from app.services.user_admin_service import check_request_update
 
 from flask_jwt_extended import  create_access_token,jwt_required, get_jwt_identity
 
 from app.services.register_login_service import validate_request
 from app.models.user_model import UserModel  
+from app.configs.auth import auth
 
 from werkzeug.exceptions import NotFound
-
+from werkzeug.exceptions import BadRequest
 
 def signup():
     session = current_app.db.session
@@ -48,7 +50,7 @@ def signin():
 
     return {"token": access_token}, HTTPStatus.OK
     
-@jwt_required()
+@auth.login_required
 def get_user_all():
 
     all_users = UserModel.query.all()
@@ -70,30 +72,39 @@ def get_one_user():
 
 @jwt_required()
 def update_user():
-    session = current_app.db.session
+    try:
+        session = current_app.db.session
 
-    user_on = get_jwt_identity()
-    update_data = request.get_json()
+        user_on = get_jwt_identity()
+        update_data = request.get_json()
 
-    password_to_hash = update_data.pop("password")
 
-    user:UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
-    user.password = password_to_hash
+        valid_request = check_request_update(update_data)
 
-    for key, value in update_data.items():
-        setattr(user, key, value)
+        user:UserModel = UserModel.query.get(user_on["user_id"])
 
-    session.add(user)
-    session.commit()
+        for key, value in valid_request.items():
+            setattr(user, key, value)
 
-    return '', HTTPStatus.NO_CONTENT
-    
+        session.add(user)
+        session.commit()
+
+        return '', HTTPStatus.NO_CONTENT
+
+    except BadRequest as e:
+        return e.description, e.code
+    except IntegrityError:
+        return {"error": "Admin already exists"}, HTTPStatus.CONFLICT   
+           
 @jwt_required()
 def delete_user():
     session = current_app.db.session
     user_on = get_jwt_identity()
 
-    user:UserModel = UserModel.query.filter_by(email=user_on["email"]).first()
+    user:UserModel = UserModel.query.get(user_on["user_id"])
+    if not user:
+        raise NotFound
+
     session.delete(user)
     session.commit()
 
