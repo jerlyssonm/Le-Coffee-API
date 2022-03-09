@@ -9,7 +9,7 @@ from werkzeug.exceptions import NotFound, BadRequest
 from app.configs.database import db
 from app.models.address_model import AddressModel
 from app.models.user_model import UserModel
-from app.services.address_service import check_address_data
+from app.services.address_service import check_address_data, check_address_data_update
 
 
 @jwt_required()
@@ -92,22 +92,25 @@ def delete_address(address_id: int):
 
 @jwt_required()
 def update_address(address_id: int):
-    session: Session = db.session
+    try:
+        session: Session = db.session
 
-    data = request.get_json()
+        data = request.get_json()
+        valid_request = check_address_data_update(data)
 
-    base_query = session.query(AddressModel)
+        base_query = session.query(AddressModel)
+        record = base_query.get(address_id)
 
-    record = base_query.get(address_id)
+        if not record:
+            return {"error": "Address not found"}, HTTPStatus.NOT_FOUND
+        
+        for key, value in valid_request.items():
+            setattr(record, key, value)
+        
+        session.add(record)
+        session.commit()
 
-    if not record:
-        return {"error": "Address not found"}, HTTPStatus.NOT_FOUND
-    
-    for key, value in data.items():
-        setattr(record, key, value)
-    
-    session.add(record)
-    session.commit()
+        return "", HTTPStatus.NO_CONTENT
 
-    return jsonify(record), HTTPStatus.OK
-
+    except BadRequest as e:
+        return e.description, e.code
