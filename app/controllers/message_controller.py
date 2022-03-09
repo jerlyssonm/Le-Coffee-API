@@ -1,4 +1,5 @@
 from flask import jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm import Session
 from http import HTTPStatus
 from werkzeug.exceptions import NotFound
@@ -6,11 +7,15 @@ from werkzeug.exceptions import NotFound
 from app.configs.database import db
 from app.models.message_model import MessageModel
 
+@jwt_required()
 def create_message():
     session: Session = db.session
     data = request.get_json
 
+    current_user = get_jwt_identity()
+
     message = MessageModel(**data)
+    message.sender_id = current_user
     session.add(message)
     session.commit()
 
