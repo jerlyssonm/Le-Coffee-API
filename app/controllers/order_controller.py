@@ -2,12 +2,13 @@ from http import HTTPStatus
 from flask import request, jsonify
 from app.configs.database import db
 from sqlalchemy.orm.session import Session
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.configs.auth import auth
 from app.models.order_model import OrderModel
 from app.models.product_model import ProductModel
 from app.models.product_order_model import ProductsOrderModel
+from app.services.order_service import check_valid_keys_order
 
 
 def calc_price(cart_list: list):
@@ -52,32 +53,39 @@ def add_item(order: OrderModel, item: dict):
 
 @jwt_required()
 def create_order():
+    try:
+        session: Session = db.session
 
-    session: Session = db.session
+        data = request.get_json()
 
-    data = request.get_json()
-    cart_list = data.pop("cart_products")
+        valid_data = check_valid_keys_order(data)
 
-    order = OrderModel(**data)
+        cart_list = valid_data.pop("cart_products")
 
-    for item in cart_list:
-        add_item(order, item)
+        order = OrderModel(**valid_data)
 
-    order.total_price = calc_price(cart_list)
+        for item in cart_list:
+            add_item(order, item)
 
-    current_user = get_jwt_identity()
+        order.total_price = calc_price(cart_list)
 
-    order.user_id = current_user["user_id"]
+        current_user = get_jwt_identity()
 
-    session.add(order)
-    session.commit()
+        order.user_id = current_user["user_id"]
 
-    return {
-        "order_id": order.order_id,
-        "date": order.date,
-        "total_price": order.total_price,
-        "user_id": order.user_id,
-    }
+        session.add(order)
+        session.commit()
+
+        return {
+            "order_id": order.order_id,
+            "date": order.date,
+            "total_price": order.total_price,
+            "user_id": order.user_id,
+        }, HTTPStatus.CREATED
+
+    except BadRequest as error:
+        return error.description, error.code
+        
 
 
 @auth.login_required

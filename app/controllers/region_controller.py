@@ -6,7 +6,7 @@ from app.configs.auth import auth
 
 from psycopg2.errors import NotNullViolation
 
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 
 
 def get_regions():
@@ -31,14 +31,8 @@ def create_region():
 
         return jsonify(new_region), 201
 
-    except NotNullViolation as err:
-        return jsonify(err.args[0]), 400
-
-    except TypeError as err:
-        return jsonify(err.args[0]), 400
-
-    except ValueError as err:
-        return jsonify(err.args[0]), 400
+    except BadRequest as err:
+        return err.description, err.code
 
 
 @auth.login_required
@@ -48,7 +42,7 @@ def update_region(region_id: int):
     try:
         session = current_app.db.session
 
-        region_data = check_region_data(region_data, check_missing_keys=False)
+        region_data = check_region_data(region_data)
 
         region = RegionModel.query.get_or_404(region_id)
 
