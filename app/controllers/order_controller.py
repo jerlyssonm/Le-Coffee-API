@@ -2,7 +2,7 @@ from http import HTTPStatus
 from flask import request, jsonify
 from app.configs.database import db
 from sqlalchemy.orm.session import Session
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.configs.auth import auth
 from app.models.order_model import OrderModel
@@ -53,6 +53,7 @@ def add_item(order: OrderModel, item: dict):
 
 @jwt_required()
 def create_order():
+    try:
         session: Session = db.session
 
         data = request.get_json()
@@ -82,7 +83,8 @@ def create_order():
             "user_id": order.user_id,
         }, HTTPStatus.CREATED
 
-
+    except BadRequest as error:
+        return error.description, error.code
         
 
 
