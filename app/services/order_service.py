@@ -22,4 +22,5 @@ def check_valid_keys_order(request):
             error_description = {"wrong key": list(wrong_keys)[0]}
 
         raise BadRequest(description=error_description)
+        
     return request
