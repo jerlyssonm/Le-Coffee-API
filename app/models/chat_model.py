@@ -15,4 +15,4 @@ class ChatModel(db.Model):
   chat_id: int = Column(Integer, primary_key = True)
   order_id: int = Column(Integer, ForeignKey("orders.order_id"))
 
-  order = relationship("OrderModel", back_populates = "chat")
+  order = relationship("OrderModel", back_populates = "chat", cascade="all, delete")

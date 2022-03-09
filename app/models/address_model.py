@@ -25,5 +25,5 @@ class AddressModel(db.Model):
     cep = Column(String, nullable=False)
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.user_id'))
 
-    user = relationship("UserModel", back_populates="address")
+    user = relationship("UserModel", back_populates="address", cascade="all, delete")
 
