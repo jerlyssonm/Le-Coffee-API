@@ -64,4 +64,5 @@ def check_address_data_update(request):
 
         raise BadRequest(description=error_description)
     
+    
     return request

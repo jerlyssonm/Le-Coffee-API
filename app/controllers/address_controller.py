@@ -99,12 +99,14 @@ def update_address(address_id: int):
         valid_request = check_address_data_update(data)
 
         base_query = session.query(AddressModel)
-        record = base_query.get(address_id)
+        record = base_query.get(address_id)        
 
         if not record:
             return {"error": "Address not found"}, HTTPStatus.NOT_FOUND
         
         for key, value in valid_request.items():
+            if type(value) is str:
+                value = value.title()
             setattr(record, key, value)
         
         session.add(record)
