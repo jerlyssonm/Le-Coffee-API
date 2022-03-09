@@ -114,6 +114,7 @@ POST  BASE_URL /users/login
 ```
 ***
 **Buscar todos usuarios**
+>aqui pegamos todos os usuarios cadastrado
 ```
 GET BASE_URL /users
 ```
@@ -127,6 +128,19 @@ GET BASE_URL /users
 ```
 [ ] ou uma lista com todos os usuarios
 ```
+**Buscar Todas as Orders**
+```
+GET  BASE_URL  /orders
+```
+**Entradas**
+```
+
+```
+**Retorno: 200, OK**
+```
+Lista com todas orders
+```
+
 **Registrar Produtos**
 ```
 POST BASE_URL  /products
@@ -166,7 +180,7 @@ DELETE  BASE_URL  /products/<int:product_id>
 PUT  BASE_URL  /users
 ```
 ***Entrada***
-voce pode mandar um valor ou todos para atualizar
+>aqui voce pode mandar um ou mais valores para atualização
 
 ```
 {
