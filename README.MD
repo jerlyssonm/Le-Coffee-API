@@ -22,7 +22,7 @@ BASE_URL = https://le-coffee.herokuapp.com
 POST  BASE_URL /admin/register
 ```
 ***Entrada:***
-```json
+```
     {
 	    "name": "example",
 	    "email": "example@hotmail.com",
@@ -30,7 +30,7 @@ POST  BASE_URL /admin/register
     }
 ```
 ***Retorno: 201, CREATED***
-```json
+```
     {
 	    "user_id": "430e5ca8-ecab-4e79-bbe4-5838d99ec0f1",
 	    "name": "example",
@@ -43,14 +43,14 @@ POST  BASE_URL /admin/register
 POST  BASE_URL /admin/login
 ```
 ***Entrada:***
-```json
+```
     {
 	    "email": "example@hotmail.com",
 	    "password": "123456789"
     }
 ```
 ***Retorno: 200, OK***
-```json
+```
     {
 	    "admin_key": "0ZrD3rXuo4FoO9lG3aQ4Uw"
     }
@@ -167,6 +167,7 @@ PUT  BASE_URL  /users
 ```
 ***Entrada***
 voce pode mandar um valor ou todos para atualizar
+
 ```
 {
 	"password": "example1"
@@ -178,12 +179,16 @@ ou
 	"password": "123456789"
 }
 ```
+
 ***Retorno: 204, NO CONTENT***
+
 ```
 sem retorno
 ```
+
 ***
 **Deletar conta do usuario**
+
 ```
 DELETE  BASE_URL  /users
 ```
@@ -199,9 +204,11 @@ DELETE  BASE_URL  /users
 ```
 
 **Avaliar Produtos**
+
 ```
 POST  BASE_URL  /feedbacks/<int:product_id>
 ```
+
 ***Entradas***
 ```
 
