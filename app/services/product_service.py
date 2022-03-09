@@ -5,6 +5,7 @@ def validate_product(request_data: dict):
     valid_keys = set(getenv("PRODUCT_KEYS").split(","))
     valid_categories = getenv("CATEGORY_TYPES").split(",")
     valid_regions = getenv("REGIONS").split(",")
+
     allowed_number_of_keys_ = 7
 
     if len(request_data) < allowed_number_of_keys_:
