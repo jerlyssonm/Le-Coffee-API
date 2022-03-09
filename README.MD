@@ -58,7 +58,6 @@ POST  BASE_URL /admin/login
 </details>
 
 ***
-***
 
 <details> <summary> <b>USUARIO<b> </summary>
 
@@ -82,7 +81,7 @@ POST  BASE_URL  /users/register
 	    "email": "user@hotmail.com"
     }
 ```
-****
+***
 **Login de usuario**
 ```
 POST  BASE_URL /users/login
@@ -102,7 +101,6 @@ POST  BASE_URL /users/login
 ```
 </details>
 
-***
 ***
 ## ROTAS COM AUTENTICAÇÃO
 
@@ -127,11 +125,32 @@ GET BASE_URL /users
 ```json
 [ ] ou uma lista com todos os usuarios
 ```
+**Registrar Produtos**
+```
+POST BASE_URL  /products
+```
+***Entrada:***
+```json
 
+```
+***Retorno: 201,CREATE***
+```json
+
+```
+**atualizar Produtos**
+```
+PATCH  BASE_URL  /products/<int:product_id>
+```
+**Deletar Produtos**
+```
+DELETE  BASE_URL  /products/<int:product_id>
+```
+***Entrada***
+```json
+```
+***Retorno: 204, NO CONTENT***
 </details>
 
-
-***
 ***
 <details><summary>Usuario</summary>
 
@@ -140,7 +159,7 @@ GET BASE_URL /users
 "Bearer": token
 ```
 ***
-**Atualizar informações da conta**
+**Atualizar informações do usuario**
 ```
 PUT  BASE_URL  /users
 ```
@@ -162,7 +181,7 @@ ou
 sem retorno
 ```
 ***
-**Deletar conta**
+**Deletar conta do usuario**
 ```
 DELETE  BASE_URL  /users
 ```
@@ -177,5 +196,14 @@ DELETE  BASE_URL  /users
 
 ```
 
+**Avaliar Produtos**
+```
+POST  BASE_URL  /feedbacks/<int:product_id>
+```
+***Entradas***
+```json
+
+```
+***retorno: 201,CREATED***
 </details>
 
