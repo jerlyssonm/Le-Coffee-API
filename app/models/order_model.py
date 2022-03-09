@@ -21,6 +21,6 @@ class OrderModel(db.Model):
     date = Column(DateTime(), nullable=False, default=datetime.now())
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
 
-    user = relationship("UserModel", back_populates="order")
-    products = relationship("ProductsOrderModel")
-    chat = relationship("ChatModel")
+    user = relationship("UserModel", back_populates="order", cascade="all, delete")
+    products = relationship("ProductsOrderModel" , cascade="all, delete")
+    chat = relationship("ChatModel", cascade="all, delete")

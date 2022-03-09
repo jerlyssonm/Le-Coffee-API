@@ -21,5 +21,5 @@ class FeedbackModel(db.Model):
     product_id = Column(Integer, ForeignKey("products.product_id"))
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
 
-    user = relationship("UserModel", back_populates="feedback")
-    product = relationship("ProductModel", back_populates="feedbacks")
+    user = relationship("UserModel", back_populates="feedback", cascade="all, delete")
+    product = relationship("ProductModel", back_populates="feedbacks", cascade="all, delete")
