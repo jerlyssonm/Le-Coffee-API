@@ -54,7 +54,11 @@ def check_region_data(data: dict, check_missing_keys: bool = True):
     if match_response_latitude is None:
       raise ValueError({
         "msg": "latitude is invalid",
-        "latitude": latitude
+        "valid_latitude": {
+          "max_value": "+90.000",
+          "min_value": "-90.00"
+        },
+        "invalid_latitude": latitude
       })
 
   if 'longitude' in data.keys():
@@ -64,7 +68,11 @@ def check_region_data(data: dict, check_missing_keys: bool = True):
     if match_response_longitude is None:
       raise ValueError({
         "msg": "longitude is invalid",
-        "longitude": longitude
+        "valid_longitude": {
+          "max_value": "+180.000",
+          "min_value": "-180.000"
+        },
+        "invalid_longitude": longitude
       })
 
   if 'name' in data.keys():
