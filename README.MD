@@ -15,7 +15,7 @@ Um usuário logado poderá ver a lista de produtos oferecidos pela loja, visuali
 ```http
 BASE_URL = https://le-coffee.herokuapp.com
 ```
-***ADMIN***
+<details><summary> <b>ADMINISTRADOR</b> </summary>
 
 **Criar conta de administrador**
 ```
@@ -55,10 +55,12 @@ POST  BASE_URL /admin/login
 	    "admin_key": "0ZrD3rXuo4FoO9lG3aQ4Uw"
     }
 ```
-****
-****
-****
-***USUARIO***
+</details>
+
+***
+***
+
+<details> <summary> <b>USUARIO<b> </summary>
 
 **Criar conta de usuario**
 ```
@@ -98,10 +100,13 @@ POST  BASE_URL /users/login
 		"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0Njc5OTg4MSwianRpIjoiNGUzNjQxNzEtODc2OS00ZjNjLTkyNTEtMDk3ZjM3NjI1NmFhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoiNDMwZTVjYTgtZWNhYi00ZTc5LWJiZTQtNTgzOGQ5OWVjMGYxIiwibmFtZSI6Implcmx5c3NvbiIsImVtYWlsIjoiamVybHlzc29uQGhvdG1haWwuY29tIn0sIm5iZiI6MTY0Njc5OTg4MSwiZXhwIjoxNjQ2ODAwNzgxfQ.B0OML2tpaE3bLs5z7-RrOIhBGBjfG4mu9y38Ol0N7dc"
 	}
 ```
+</details>
+
 ***
 ***
 ## ROTAS COM AUTENTICAÇÃO
-***Admins***
+
+<details><summary>Administrador<b></summary>
 
 **autenticação para admin** 
 ```
@@ -110,21 +115,25 @@ POST  BASE_URL /users/login
 ***
 **Buscar todos usuarios**
 ```
-GET  /users
+GET BASE_URL /users
 ```
 ***Entrada***
 ```json
 {
-vazio.
+
 }
 ```
 ***Retorno: 200, OK***
 ```json
 [ ] ou uma lista com todos os usuarios
 ```
+
+</details>
+
+
 ***
 ***
-***USUARIO***
+<details><summary>Usuario</summary>
 
 **autenticação para usuario** 
 ```
@@ -167,3 +176,6 @@ DELETE  BASE_URL  /users
 ```
 
 ```
+
+</details>
+
