@@ -6,6 +6,7 @@ from flask_jwt_extended import  create_access_token,jwt_required, get_jwt_identi
 
 from app.services.register_login_service import validate_request
 from app.models.user_model import UserModel  
+from app.configs.auth import auth
 
 from werkzeug.exceptions import NotFound
 
@@ -48,7 +49,7 @@ def signin():
 
     return {"token": access_token}, HTTPStatus.OK
     
-@jwt_required()
+@auth.login_required
 def get_user_all():
 
     all_users = UserModel.query.all()
