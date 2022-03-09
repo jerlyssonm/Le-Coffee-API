@@ -21,7 +21,7 @@ Para o cliente, é possível buscar os vários tipos de cafés existentes,consul
 
 A documentação desta API foi feita no Postman.
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/19946807/UVsFz8Wa)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/19946807/UVsFz8tc)
 
 <br>
 
