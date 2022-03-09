@@ -23,4 +23,4 @@ class OrderModel(db.Model):
 
     user = relationship("UserModel", back_populates="order")
     products = relationship("ProductsOrderModel")
-    message = relationship("MessageModel")
+    message = relationship("MessageModel", cascade="all, delete")

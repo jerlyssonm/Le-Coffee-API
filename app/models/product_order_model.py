@@ -13,5 +13,5 @@ class ProductsOrderModel(db.Model):
 
     product_order_id = Column('product_order_id', Integer, primary_key=True)
     quantity = Column('quantity', Integer, nullable=False)
-    product_id = Column('product_id', Integer, ForeignKey('products.product_id'))
-    order_id = Column('order_id', Integer,  ForeignKey('orders.order_id'))
+    product_id = Column('product_id', Integer, ForeignKey('products.product_id', ondelete="CASCADE"))
+    order_id = Column('order_id', Integer,  ForeignKey('orders.order_id', ondelete="CASCADE"))

@@ -104,7 +104,7 @@ def get_all_orders():
         return {"orders": []}
 
     page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("perpage", 3, type=int)
+    per_page = request.args.get("perpage", 5, type=int)
     orders = base_query.order_by(OrderModel.order_id).paginate(page, per_page)
 
     return jsonify(orders.items), 200
