@@ -26,4 +26,4 @@ class ProductModel(db.Model):
     region_id = Column(Integer, ForeignKey("regions.id"))
 
     region = relationship("RegionModel", back_populates="products", uselist=False)
-    feedbacks = relationship("FeedbackModel", back_populates="product")
+    feedbacks = relationship("FeedbackModel", back_populates="product", cascade="all, delete")
