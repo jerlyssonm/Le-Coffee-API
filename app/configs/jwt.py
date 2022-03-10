@@ -1,5 +1,6 @@
-from os import getenv
 from datetime import timedelta
+from os import getenv
+
 from flask import Flask
 from flask_jwt_extended import JWTManager
 
