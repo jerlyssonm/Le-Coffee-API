@@ -6,13 +6,13 @@ from werkzeug.exceptions import NotFound
 
 from app.configs.database import db
 from app.models.message_model import MessageModel
-from app.services.message_services import validade_message
+from app.services.message_services import validate_message
 
 @jwt_required()
 def create_message():
     session: Session = db.session
     data = request.get_json()
-    validade_message(data)
+    validate_message(data)
 
     current_user = get_jwt_identity()
     message = MessageModel(**data)
