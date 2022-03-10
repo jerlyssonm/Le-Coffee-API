@@ -29,8 +29,8 @@ def calc_price(cart_list: list):
         price = product.price * cart_product["quantity"]
 
         total = price + total
-
-    return total
+ 
+    return float('{:.2f}'.format(total))
 
 
 def add_item(order: OrderModel, cart_product: dict):
