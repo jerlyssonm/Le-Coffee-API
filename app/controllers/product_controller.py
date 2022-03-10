@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 from werkzeug.exceptions import BadRequest
 from app.models.region_model import RegionModel
-from app.services.product_service import validate_product
+from app.services.product_service import validate_product, validate_product_update
 from app.configs.auth import auth
 from app.services.region_service import region_populate
 
@@ -67,21 +67,32 @@ def get_product_by_id(product_id):
 
 @auth.login_required
 def update_product(product_id):
-    session: Session = current_app.db.session
+    try:
+        session: Session = current_app.db.session
 
-    patch_product: ProductModel = ProductModel.query.get(product_id)
-    data = request.get_json()
+        patch_product: ProductModel = ProductModel.query.get(product_id)
+        data = request.get_json()
 
-    if not patch_product:
-        return {"msg": "Product not found"}, HTTPStatus.NOT_FOUND
+        validated_update = validate_product_update(data)
 
-    for keys, value in data.items():
-        setattr(patch_product, keys, value)
+        if not patch_product:
+            return {"msg": "Product not found"}, HTTPStatus.NOT_FOUND
 
-    session.add(patch_product)
-    session.commit()
+        for keys, value in validated_update.items():
+            setattr(patch_product, keys, value)
 
-    return "", HTTPStatus.OK
+        session.add(patch_product)
+        session.commit()
+
+        return "", HTTPStatus.OK
+
+    except BadRequest as e:
+        return e.description, e.code
+    
+    except IntegrityError as error:
+        if isinstance(error.orig, UniqueViolation):
+            return { "error_message": "Product already exists"}, HTTPStatus.CONFLICT
+
 
 
 @auth.login_required

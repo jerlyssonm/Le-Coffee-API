@@ -6,13 +6,22 @@ from werkzeug.exceptions import BadRequest
 from app.models.region_model import RegionModel
 
 
-def check_data_to_create_region(data: dict):
+def check_data_to_create_region(request_data: dict):
 
     valid_keys = set(getenv("REGION_KEYS").split(","))
     valid_regions = getenv("REGIONS").split(",")
+    allowed_number_of_keys_ = 3
+   
+    if len(request_data) < allowed_number_of_keys_:
+        missing_keys = valid_keys - set(request_data.keys())
+        error_description = {"missing keys": list(missing_keys)}
 
-    wrong_keys = set(data.keys()) - valid_keys
-    missing_keys = valid_keys - data.keys()
+        if len(missing_keys) == 1:
+            error_description = {"missing key": list(missing_keys)[0]}
+
+        raise BadRequest(description=error_description)
+
+    wrong_keys = set(request_data.keys()) - valid_keys
 
     if wrong_keys:
         raise BadRequest(
@@ -22,30 +31,23 @@ def check_data_to_create_region(data: dict):
             }
         )
 
-    if missing_keys:
-        raise BadRequest(
-            description={
-                "available_keys": list(valid_keys),
-                "missing_keys": list(missing_keys),
-            }
-        )
-
-    wrong_values_type = [value for value in data.values() if type(value) != str]
+    
+    wrong_values_type = [value for value in request_data.values() if type(value) != str]
 
     if wrong_values_type:
         raise BadRequest(
             description={"error_message": "All field values must be a string type"}
         )
 
-    if data["name"] not in valid_regions:
+    if request_data["name"] not in valid_regions:
         raise BadRequest(
             description={
                 "available_regions": valid_regions,
-                "wrong_region": data["name"],
+                "wrong_region": request_data["name"],
             }
         )
 
-    latitude: str = data["latitude"]
+    latitude: str = request_data["latitude"]
     match_rule_latitude = r"^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$"
     match_response_latitude = re.fullmatch(match_rule_latitude, latitude)
 
@@ -58,7 +60,7 @@ def check_data_to_create_region(data: dict):
             }
         )
 
-    longitude: str = data["longitude"]
+    longitude: str = request_data["longitude"]
     match_rule_longitude = r"^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$"
     match_response_longitude = re.fullmatch(match_rule_longitude, longitude)
 
@@ -71,11 +73,11 @@ def check_data_to_create_region(data: dict):
             }
         )
 
-    if "name" in data.keys():
-        name: str = data["name"]
-        data["name"] = name.title()
+    if "name" in request_data.keys():
+        name: str = request_data["name"]
+        request_data["name"] = name.title()
 
-    return data
+    return request_data
     
 
 def check_data_to_update_region(data: dict):

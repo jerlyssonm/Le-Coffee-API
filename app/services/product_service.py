@@ -21,12 +21,12 @@ def validate_product(request_data: dict):
     wrong_keys = set(request_data) - valid_keys
 
     if wrong_keys:
-        error_description = {"wrong keys": list(wrong_keys)}
-
-        if len(wrong_keys) == 1:
-            error_description = {"wrong key": list(wrong_keys)[0]}
-
-        raise BadRequest(description=error_description)
+        raise BadRequest(
+            description={
+                "available_keys": list(valid_keys),
+                "wrong_keys": list(wrong_keys),
+            }
+        )
 
     if request_data['category'] not in valid_categories:
         error_description = {"Invalid Category": request_data['category'], "Categories availiable": valid_categories}
@@ -82,3 +82,21 @@ def validate_product(request_data: dict):
 
 
     return formatted_data
+
+
+def validate_product_update(request_data: dict):
+    valid_keys = set(getenv("PRODUCT_KEYS").split(","))
+    wrong_keys = set(request_data) - valid_keys
+
+    if wrong_keys:
+        raise BadRequest(
+            description={
+                "available_keys": list(valid_keys),
+                "wrong_keys": list(wrong_keys),
+            }
+        )
+    
+    if 'name' in request_data.keys():
+        request_data['name'] = request_data['name'].title()
+    
+    return request_data
