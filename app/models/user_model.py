@@ -16,8 +16,8 @@ class UserModel(db.Model):
     user_id: str
     name: str
     email: str
-    address: AddressModel
-    order: OrderModel
+    address: list[AddressModel]
+    order: list[OrderModel]
 
     __tablename__ = "users"
 
