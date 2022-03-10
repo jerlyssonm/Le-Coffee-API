@@ -6,6 +6,7 @@ from app.configs.database import db
 
 @dataclass
 class ProductModel(db.Model):
+    product_id: int
     name: str
     price: float
     # image: str
