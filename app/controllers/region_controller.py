@@ -1,10 +1,11 @@
 from flask import current_app, jsonify, request
+from werkzeug.exceptions import BadRequest, NotFound
 
-from app.models.region_model import RegionModel
-from app.services.region_service import check_data_to_create_region, check_data_to_update_region
 from app.configs.auth import auth
+from app.models.region_model import RegionModel
+from app.services.region_service import (check_data_to_create_region,
+                                         check_data_to_update_region)
 
-from werkzeug.exceptions import NotFound, BadRequest
 
 def get_regions():
     regions = RegionModel.query.all()

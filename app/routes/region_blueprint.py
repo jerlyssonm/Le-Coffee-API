@@ -2,7 +2,6 @@ from flask import Blueprint
 
 from app.controllers import region_controller
 
-
 bp_region = Blueprint("regions", __name__, url_prefix = "/regions")
 
 bp_region.get("")(region_controller.get_regions)

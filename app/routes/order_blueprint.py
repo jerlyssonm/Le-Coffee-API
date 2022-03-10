@@ -1,4 +1,5 @@
 from flask import Blueprint
+
 from app.controllers import order_controller
 
 bp_order = Blueprint('order', __name__, url_prefix='/orders')

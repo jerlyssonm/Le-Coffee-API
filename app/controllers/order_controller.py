@@ -1,12 +1,14 @@
 from http import HTTPStatus
-from flask import request, jsonify
-from app.configs.database import db
-from sqlalchemy.orm.session import Session
-from sqlalchemy.exc import IntegrityError
-from psycopg2.errors import ForeignKeyViolation
-from werkzeug.exceptions import NotFound, BadRequest
+
+from flask import jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from psycopg2.errors import ForeignKeyViolation
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.session import Session
+from werkzeug.exceptions import BadRequest, NotFound
+
 from app.configs.auth import auth
+from app.configs.database import db
 from app.models.order_model import OrderModel
 from app.models.product_model import ProductModel
 from app.models.product_order_model import ProductsOrderModel

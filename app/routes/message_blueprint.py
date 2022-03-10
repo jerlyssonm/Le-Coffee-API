@@ -1,4 +1,5 @@
 from flask import Blueprint
+
 from app.controllers import message_controller
 
 bp_message = Blueprint('message', __name__, url_prefix='/messages')

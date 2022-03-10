@@ -1,6 +1,7 @@
-from flask import current_app
 import re
 from os import getenv
+
+from flask import current_app
 from werkzeug.exceptions import BadRequest
 
 from app.models.region_model import RegionModel

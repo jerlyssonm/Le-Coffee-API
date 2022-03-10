@@ -1,8 +1,9 @@
+from http import HTTPStatus
+
 from flask import jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm import Session
-from http import HTTPStatus
-from werkzeug.exceptions import NotFound, BadRequest
+from werkzeug.exceptions import BadRequest, NotFound
 
 from app.configs.database import db
 from app.models.message_model import MessageModel

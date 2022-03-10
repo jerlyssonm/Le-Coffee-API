@@ -1,5 +1,7 @@
 from flask import Blueprint
+
 from app.controllers import feedback_controller
+
 bp_feedback = Blueprint('feedback', __name__, url_prefix='/feedbacks')
 
 bp_feedback.post('/<int:product_id>')(feedback_controller.create_feedback)

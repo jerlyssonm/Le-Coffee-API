@@ -1,15 +1,16 @@
 from http import HTTPStatus
 
 from flask import jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy import JSON
 from sqlalchemy.orm import Session
-from werkzeug.exceptions import NotFound, BadRequest
+from werkzeug.exceptions import BadRequest, NotFound
 
 from app.configs.database import db
 from app.models.address_model import AddressModel
 from app.models.user_model import UserModel
-from app.services.address_service import check_address_data, check_address_data_update
+from app.services.address_service import (check_address_data,
+                                          check_address_data_update)
 
 
 @jwt_required()

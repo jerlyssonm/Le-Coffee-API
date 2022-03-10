@@ -2,14 +2,15 @@ from http import HTTPStatus
 from itertools import product
 
 from flask import jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm import Session
-from werkzeug.exceptions import NotFound, BadRequest
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from werkzeug.exceptions import BadRequest, NotFound
 
 from app.configs.database import db
 from app.models.feedback_model import FeedbackModel
 from app.models.product_model import ProductModel
-from app.services.feedback_services import validate_feedback, validate_feedback_update
+from app.services.feedback_services import (validate_feedback,
+                                            validate_feedback_update)
 
 
 @jwt_required()

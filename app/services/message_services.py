@@ -1,5 +1,6 @@
 from werkzeug.exceptions import BadRequest
 
+
 def validate_message(data: dict):
     valid_keys = set(["text", "order_id"])
     wrong_keys = set(data) - valid_keys

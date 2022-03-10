@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from uuid import uuid4
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.configs.database import db 
+from app.configs.database import db
 
 
 @dataclass
