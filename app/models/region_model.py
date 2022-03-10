@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.configs.database import db
+
 
 @dataclass
 class RegionModel(db.Model):
@@ -19,4 +20,4 @@ class RegionModel(db.Model):
   latitude = Column(String, nullable = False)
   longitude = Column(String, nullable = False)
 
-  products = relationship("ProductModel", back_populates = "region")
+  products = relationship("ProductModel", back_populates = "region",  cascade="all, delete")

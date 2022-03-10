@@ -1,4 +1,5 @@
 from os import getenv
+
 from werkzeug.exceptions import BadRequest
 
 
@@ -35,5 +36,8 @@ def validate_request(request_data: dict, type_login: bool = False):
         raise BadRequest(
             description={"error_message": "All field values must be a string type"}
         )
+
+    if 'name' in request_data.keys():
+        request_data['name'] = request_data['name'].title().strip()
 
     return request_data

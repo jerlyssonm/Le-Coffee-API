@@ -1,11 +1,13 @@
-from xmlrpc.client import DateTime
-from app.configs.database import db
-from datetime import datetime
-from sqlalchemy import Column, Integer, Boolean, ForeignKey, DateTime
 from dataclasses import dataclass
+from datetime import datetime
+from xmlrpc.client import DateTime
+
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from sqlalchemy.dialects.postgresql import UUID
+from app.configs.database import db
+
 
 @dataclass
 class OrderModel(db.Model):
@@ -23,4 +25,4 @@ class OrderModel(db.Model):
 
     user = relationship("UserModel", back_populates="order")
     products = relationship("ProductsOrderModel")
-    chat = relationship("ChatModel")
+    message = relationship("MessageModel", cascade="all, delete")

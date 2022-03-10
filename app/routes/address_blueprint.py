@@ -1,5 +1,7 @@
 from flask import Blueprint
+
 from app.controllers import address_controller
+
 bp_address = Blueprint('address', __name__, url_prefix='/address')
 
 bp_address.post('')(address_controller.create_address)

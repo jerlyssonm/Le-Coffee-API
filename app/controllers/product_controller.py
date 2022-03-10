@@ -1,17 +1,23 @@
-from flask import current_app, request, jsonify
 from http import HTTPStatus
-from sqlalchemy.orm.session import Session
-from app.models.product_model import ProductModel
-from sqlalchemy.exc import IntegrityError
+
+from flask import current_app, jsonify, request
 from psycopg2.errors import UniqueViolation
+
 from werkzeug.exceptions import BadRequest, NotFound
+
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.session import Session
+
+from app.configs.auth import auth
+from app.models.product_model import ProductModel
 from app.models.region_model import RegionModel
 from app.services.product_service import validate_product, validate_update_product
-from app.configs.auth import auth
+from app.services.region_service import region_populate
 
 
 @auth.login_required
 def create_product():
+    region_populate()
     try:
         session: Session = current_app.db.session
         data = request.get_json()

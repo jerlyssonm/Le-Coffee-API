@@ -1,9 +1,11 @@
-from app.configs.database import db 
 from dataclasses import dataclass
-from sqlalchemy import Column, Integer, ForeignKey, String
+
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from sqlalchemy.dialects.postgresql import UUID
+from app.configs.database import db
+
 
 @dataclass
 class AddressModel(db.Model):

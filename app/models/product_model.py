@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, Text
 
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
+
 from app.configs.database import db
+
 
 @dataclass
 class ProductModel(db.Model):
@@ -27,4 +29,4 @@ class ProductModel(db.Model):
     region_id = Column(Integer, ForeignKey("regions.id"))
 
     region = relationship("RegionModel", back_populates="products", uselist=False)
-    feedbacks = relationship("FeedbackModel", back_populates="product")
+    feedbacks = relationship("FeedbackModel", back_populates="product", cascade="all, delete")

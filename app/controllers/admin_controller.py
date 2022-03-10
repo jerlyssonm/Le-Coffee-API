@@ -1,12 +1,16 @@
-from secrets import token_urlsafe
-from flask import current_app, request, jsonify
 from http import HTTPStatus
-from app.models.admin_model import AdminModel
-from app.configs.auth import auth
-from app.services.register_login_service import validate_request
-from sqlalchemy.orm.session import Session
+from secrets import token_urlsafe
+
+from flask import current_app, jsonify, request
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.session import Session
 from werkzeug.exceptions import BadRequest
+
+from app.configs.auth import auth
+from app.models.admin_model import AdminModel
+from app.services.register_login_service import validate_request
+from app.services.user_admin_service import check_request_update
+
 
 def signup():
     try:
@@ -74,18 +78,22 @@ def delete_admin():
 
 @auth.login_required
 def update_admin(): 
-    session = current_app.db.session
-    data = request.get_json()
-    admin = auth.current_user()
+    try:
+        session = current_app.db.session
+        data = request.get_json()
+        admin = auth.current_user()
+        
+        valid_request = check_request_update(data)
+        
+        for key, value in valid_request.items():
+            setattr(admin, key, value)
 
-    if "password" in data: 
-        password_to_hash = data.pop("password")
-        admin.password = password_to_hash
-    
-    for key, value in data.items():
-        setattr(admin, key, value)
+        session.add(admin)
+        session.commit()
 
-    session.add(admin)
-    session.commit()
+        return jsonify(admin), HTTPStatus.OK
 
-    return jsonify(admin), HTTPStatus.OK
+    except BadRequest as e:
+        return e.description, e.code
+    except IntegrityError:
+        return {"error": "Admin already exists"}, HTTPStatus.CONFLICT

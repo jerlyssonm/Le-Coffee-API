@@ -1,5 +1,7 @@
 from flask import Blueprint
+
 from app.controllers import admin_controller
+
 bp_admin = Blueprint('admin', __name__, url_prefix='/admin')
 
 bp_admin.post('/register')(admin_controller.signup)

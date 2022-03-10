@@ -1,11 +1,14 @@
-from os import getenv
-from werkzeug.exceptions import BadRequest
 import re
+from os import getenv
+
+from werkzeug.exceptions import BadRequest
+
 
 def validate_product(request_data: dict):
     valid_keys = set(getenv("PRODUCT_KEYS").split(","))
     valid_categories = getenv("CATEGORY_TYPES").split(",")
     valid_regions = getenv("REGIONS").split(",")
+
     allowed_number_of_keys_ = 7
 
     if len(request_data) < allowed_number_of_keys_:
@@ -20,12 +23,12 @@ def validate_product(request_data: dict):
     wrong_keys = set(request_data) - valid_keys
 
     if wrong_keys:
-        error_description = {"wrong keys": list(wrong_keys)}
-
-        if len(wrong_keys) == 1:
-            error_description = {"wrong key": list(wrong_keys)[0]}
-
-        raise BadRequest(description=error_description)
+        raise BadRequest(
+            description={
+                "available_keys": list(valid_keys),
+                "wrong_keys": list(wrong_keys),
+            }
+        )
 
     if request_data['category'] not in valid_categories:
         error_description = {"Invalid Category": request_data['category'], "Categories availiable": valid_categories}
@@ -72,7 +75,7 @@ def validate_product(request_data: dict):
 
 
     formatted_data = {
-        'name': request_data['name'].title(),
+        'name': request_data['name'].title().strip(),
         'price': float('{:.2f}'.format(request_data['price'])) ,
         'description': request_data['description'],
         'region': request_data['region'],
