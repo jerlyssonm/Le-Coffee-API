@@ -29,7 +29,7 @@ class UserModel(db.Model):
     address = relationship("AddressModel", back_populates="user", cascade="all, delete")
     feedback = relationship("FeedbackModel", back_populates="user", cascade="all, delete")
     order = relationship("OrderModel", back_populates="user", cascade="all, delete")
-    message = relationship("MessageModel", cascade="all, delete")
+    message = relationship("MessageModel", back_populates="user", cascade="all, delete")
 
 
     @property
