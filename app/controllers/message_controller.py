@@ -2,10 +2,10 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from psycopg2.errors import ForeignKeyViolation
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from werkzeug.exceptions import BadRequest, NotFound
-from sqlalchemy.exc import IntegrityError
-from psycopg2.errors import ForeignKeyViolation
 
 from app.configs.database import db
 from app.models.message_model import MessageModel

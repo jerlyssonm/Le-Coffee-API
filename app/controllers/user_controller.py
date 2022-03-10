@@ -1,7 +1,8 @@
 from http import HTTPStatus
 
 from flask import current_app, jsonify, request
-from flask_jwt_extended import (create_access_token, get_jwt_identity, jwt_required)
+from flask_jwt_extended import (create_access_token, get_jwt_identity,
+                                jwt_required)
 from psycopg2.errors import UniqueViolation
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest, NotFound

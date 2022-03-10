@@ -7,6 +7,7 @@ from app.configs.database import db
 from app.models.feedback_model import FeedbackModel
 from app.models.region_model import RegionModel
 
+
 @dataclass
 class ProductModel(db.Model):
     product_id: int
