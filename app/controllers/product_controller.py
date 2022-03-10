@@ -2,15 +2,16 @@ from http import HTTPStatus
 
 from flask import current_app, jsonify, request
 from psycopg2.errors import UniqueViolation
+
+from werkzeug.exceptions import BadRequest, NotFound
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.session import Session
-from werkzeug.exceptions import BadRequest
 
 from app.configs.auth import auth
 from app.models.product_model import ProductModel
 from app.models.region_model import RegionModel
-from app.services.product_service import (validate_product,
-                                          validate_product_update)
+from app.services.product_service import validate_product, validate_update_product
 from app.services.region_service import region_populate
 
 
@@ -42,7 +43,8 @@ def create_product():
     except IntegrityError as error:
         if isinstance(error.orig, UniqueViolation):
             return {"error": "Product name already exists"}, HTTPStatus.CONFLICT
-
+    except NotFound:
+        return jsonify({"msg": "region not found"}), 404
 
 def get_all_products():
     session: Session = current_app.db.session
@@ -73,41 +75,47 @@ def update_product(product_id):
     try:
         session: Session = current_app.db.session
 
-        patch_product: ProductModel = ProductModel.query.get(product_id)
         data = request.get_json()
 
-        validated_update = validate_product_update(data)
+        data = validate_update_product(data)
+
+        patch_product: ProductModel = ProductModel.query.get_or_404(product_id)
 
         if not patch_product:
             return {"msg": "Product not found"}, HTTPStatus.NOT_FOUND
 
-        for keys, value in validated_update.items():
+        for keys, value in data.items():
             setattr(patch_product, keys, value)
 
         session.add(patch_product)
         session.commit()
 
-        return "", HTTPStatus.OK
+        return jsonify(patch_product), HTTPStatus.OK
 
-    except BadRequest as e:
-        return e.description, e.code
-    
+    except BadRequest as err:
+        return err.description, err.code
+
+    except NotFound:
+        return jsonify({"msg": "product not found"}), 404
+
     except IntegrityError as error:
         if isinstance(error.orig, UniqueViolation):
             return { "error_message": "Product already exists"}, HTTPStatus.CONFLICT
 
 
-
 @auth.login_required
 def delete_product(product_id):
-    session: Session = current_app.db.session
+    try:
+        session: Session = current_app.db.session
 
-    deleted_product: ProductModel = ProductModel.query.get(product_id)
+        deleted_product: ProductModel = ProductModel.query.get_or_404(product_id)
 
-    if not deleted_product:
-        return {"msg": "Product not found"}, HTTPStatus.NOT_FOUND
+        if not deleted_product:
+            return {"msg": "Product not found"}, HTTPStatus.NOT_FOUND
 
-    session.delete(deleted_product)
-    session.commit()
+        session.delete(deleted_product)
+        session.commit()
 
-    return "", HTTPStatus.NO_CONTENT
+        return "", HTTPStatus.NO_CONTENT
+    except NotFound:
+        return jsonify({"msg": "product not found"}), 404
