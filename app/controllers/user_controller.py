@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from flask import jsonify, request,current_app
 from sqlalchemy.exc import IntegrityError
+from psycopg2.errors import UniqueViolation
 from app.services.user_admin_service import check_request_update
 
 from flask_jwt_extended import  create_access_token,jwt_required, get_jwt_identity
@@ -93,8 +94,10 @@ def update_user():
 
     except BadRequest as e:
         return e.description, e.code
-    except IntegrityError:
-        return {"error": "Admin already exists"}, HTTPStatus.CONFLICT   
+
+    except IntegrityError as error:
+        if isinstance(error.orig, UniqueViolation):
+            return { "error_message": "Product already exists"}, HTTPStatus.CONFLICT
            
 @jwt_required()
 def delete_user():
