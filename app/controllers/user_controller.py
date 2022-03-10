@@ -27,8 +27,12 @@ def signup():
 
         session.add(new_user)
         session.commit()
-
-        return jsonify(new_user), HTTPStatus.CREATED
+        
+        return {
+            "user_id": new_user.user_id,
+            "name": new_user.name,
+            "email": new_user.email
+            }, HTTPStatus.CREATED
 
     except IntegrityError:
         return {"message":"email already exists"}, HTTPStatus.CONFLICT
@@ -67,6 +71,7 @@ def get_user_all():
 
 @jwt_required()
 def get_one_user():
+    user_on = get_jwt_identity()
 
     try:
         user_on = get_jwt_identity()

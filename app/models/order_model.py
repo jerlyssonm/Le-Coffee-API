@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from app.configs.database import db
+from app.models.product_model import ProductModel
 
 
 @dataclass
@@ -14,7 +15,7 @@ class OrderModel(db.Model):
     order_id: int
     status: bool
     date: datetime.now()
-    user_id: int
+    products: ProductModel
 
     __tablename__ = "orders"
 

@@ -7,6 +7,8 @@ from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.configs.database import db
+from app.models.address_model import AddressModel
+from app.models.order_model import OrderModel
 
 
 @dataclass
@@ -14,6 +16,8 @@ class UserModel(db.Model):
     user_id: str
     name: str
     email: str
+    address: list[AddressModel]
+    order: list[OrderModel]
 
     __tablename__ = "users"
 
@@ -25,6 +29,8 @@ class UserModel(db.Model):
     address = relationship("AddressModel", back_populates="user", cascade="all, delete")
     feedback = relationship("FeedbackModel", back_populates="user", cascade="all, delete")
     order = relationship("OrderModel", back_populates="user", cascade="all, delete")
+    message = relationship("MessageModel", back_populates="user", cascade="all, delete")
+
 
     @property
     def password(self):
