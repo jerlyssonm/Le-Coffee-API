@@ -38,12 +38,12 @@ def check_address_data(request_data: dict):
         )
 
   formatted_data = {
-        "street": request_data["street"].title(),
-        "number": request_data["number"],
-        "city": request_data["city"].title(),
-        "state": request_data["state"].title(),
-        "country": request_data["country"].title(),
-        "cep": request_data["cep"]
+        "street": request_data["street"].title().strip(),
+        "number": request_data["number"].strip(),
+        "city": request_data["city"].title().strip(),
+        "state": request_data["state"].title().strip(),
+        "country": request_data["country"].title().strip(),
+        "cep": request_data["cep"].strip()
     }
   
   return formatted_data
