@@ -1,17 +1,17 @@
 from http import HTTPStatus
-from flask import jsonify, request,current_app
-from sqlalchemy.exc import IntegrityError
+
+from flask import current_app, jsonify, request
+from flask_jwt_extended import (create_access_token, get_jwt_identity,
+                                jwt_required)
 from psycopg2.errors import UniqueViolation
+from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import BadRequest, NotFound
+
+from app.configs.auth import auth
+from app.models.user_model import UserModel
+from app.services.register_login_service import validate_request
 from app.services.user_admin_service import check_request_update
 
-from flask_jwt_extended import  create_access_token,jwt_required, get_jwt_identity
-
-from app.services.register_login_service import validate_request
-from app.models.user_model import UserModel  
-from app.configs.auth import auth
-
-from werkzeug.exceptions import NotFound
-from werkzeug.exceptions import BadRequest
 
 def signup():
     session = current_app.db.session

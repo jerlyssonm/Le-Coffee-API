@@ -1,6 +1,9 @@
-from app.configs.database import db
-from sqlalchemy import Column, Integer, ForeignKey
 from dataclasses import dataclass
+
+from sqlalchemy import Column, ForeignKey, Integer
+
+from app.configs.database import db
+
 
 @dataclass
 class ProductsOrderModel(db.Model):

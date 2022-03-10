@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from sqlalchemy import Column, ForeignKey, Integer, String, Float, Text
 
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
+
 from app.configs.database import db
+
 
 @dataclass
 class ProductModel(db.Model):

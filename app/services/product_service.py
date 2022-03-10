@@ -1,6 +1,8 @@
-from os import getenv
-from werkzeug.exceptions import BadRequest
 import re
+from os import getenv
+
+from werkzeug.exceptions import BadRequest
+
 
 def validate_product(request_data: dict):
     valid_keys = set(getenv("PRODUCT_KEYS").split(","))

@@ -1,14 +1,16 @@
-from secrets import token_urlsafe
-from flask import current_app, request, jsonify
 from http import HTTPStatus
-from app.models.admin_model import AdminModel
-from app.configs.auth import auth
-from app.services.register_login_service import validate_request
-from sqlalchemy.orm.session import Session
+from secrets import token_urlsafe
+
+from flask import current_app, jsonify, request
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.session import Session
 from werkzeug.exceptions import BadRequest
 
+from app.configs.auth import auth
+from app.models.admin_model import AdminModel
+from app.services.register_login_service import validate_request
 from app.services.user_admin_service import check_request_update
+
 
 def signup():
     try:

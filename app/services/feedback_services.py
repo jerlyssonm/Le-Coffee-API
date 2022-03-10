@@ -1,5 +1,6 @@
-from os import getenv
 import re
+from os import getenv
+
 from werkzeug.exceptions import BadRequest
 
 

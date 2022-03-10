@@ -1,5 +1,7 @@
 from os import getenv
+
 from werkzeug.exceptions import BadRequest
+
 
 def check_request_update(request_data: dict):
     valid_keys = set(getenv("REGISTER_KEYS").split(","))

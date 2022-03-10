@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.configs.database import db
+
 
 @dataclass
 class RegionModel(db.Model):

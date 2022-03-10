@@ -1,4 +1,5 @@
 from flask_httpauth import HTTPTokenAuth
+
 from app.models.admin_model import AdminModel
 
 auth = HTTPTokenAuth()

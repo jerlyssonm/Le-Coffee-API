@@ -1,5 +1,7 @@
 from os import getenv
+
 from werkzeug.exceptions import BadRequest
+
 
 def check_valid_keys_order(request_data: dict):
     
