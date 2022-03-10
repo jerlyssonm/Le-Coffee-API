@@ -37,6 +37,6 @@ def validate_request(request_data: dict, type_login: bool = False):
         )
 
     if 'name' in request_data.keys():
-        request_data['name'] = request_data['name'].title()
+        request_data['name'] = request_data['name'].title().strip()
 
     return request_data

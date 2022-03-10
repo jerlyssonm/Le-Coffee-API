@@ -14,6 +14,6 @@ def check_request_update(request_data: dict):
         )
     
     if 'name' in request_data.keys():
-        request_data['name'] = request_data['name'].title()
+        request_data['name'] = request_data['name'].title().strip()
     
     return request_data
