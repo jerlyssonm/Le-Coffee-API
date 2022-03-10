@@ -18,7 +18,7 @@ class MessageModel(db.Model):
 
     message_id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
-    user_id = Column(UUID(as_uuid=True), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.user_id"))
     order_id: int = Column(Integer, ForeignKey("orders.order_id"))
 
     order = relationship("OrderModel", back_populates = "message")
