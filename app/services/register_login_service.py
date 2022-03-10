@@ -36,4 +36,7 @@ def validate_request(request_data: dict, type_login: bool = False):
             description={"error_message": "All field values must be a string type"}
         )
 
+    if 'name' in request_data.keys():
+        request_data['name'] = request_data['name'].title()
+
     return request_data
