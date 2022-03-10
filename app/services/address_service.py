@@ -1,60 +1,57 @@
+import re
 from os import getenv
 from werkzeug.exceptions import BadRequest
 
 
-def check_address_data(data: dict, check_missing_keys: bool = True):
-  invalid_keys = []
-  missing_keys = ["street", "number", "city", "state", "country", "cep"]
-  invalid_values = {}
-  valid_address = {"street": str, "number": str, "city": str, "state": str, "country": str, "cep": str}
+def check_address_data(request_data: dict):
+  valid_keys = set(getenv("ADDRESS_KEYS").split(","))
+  wrong_keys = set(request_data) - valid_keys
 
-  for key, value in data.items():
-    if key not in valid_address:
-      invalid_keys.append(key)
+  allowed_number_of_keys_ = 6
 
-    if type(value) != str:
-      invalid_values[key] = value
+  if len(request_data) < allowed_number_of_keys_:
+        missing_keys = valid_keys - set(request_data.keys())
+        error_description = {"missing keys": list(missing_keys)}
 
-    if key in missing_keys:
-      missing_keys.remove(key)
+        if len(missing_keys) == 1:
+            error_description = {"missing key": list(missing_keys)[0]}
+  
+  if wrong_keys:
+        raise BadRequest(
+            description={
+                "available_keys": list(valid_keys),
+                "wrong_keys": list(wrong_keys),
+            }
+        )
 
-  if len(missing_keys) > 0 and check_missing_keys:
-    error_description = {
-      "available_keys": ["street", "number", "city", "state", "country", "cep"],
-      "missing_keys": missing_keys
-    }
-    raise BadRequest(description=error_description)
+  cep: str = request_data["cep"]
+  match_rule_longitude = r"^[0-9]{5}-[0-9]{3}$"
+  match_response_cep = re.fullmatch(match_rule_longitude, cep)
 
-  if len(invalid_keys) > 0:
-    error_description = {
-      "available_keys": ["name", "latitude", "longitude"],
-      "wrong_keys": invalid_keys
-    }
-    raise BadRequest(description=error_description)
-
-  if len(invalid_values) > 0:
-    error_description = {
-      "available_values": {"street": str, "number": str, "city": str, "state": str, "country": str, "cep": str},
-      "wrong_values": invalid_values
-    }
-    raise BadRequest(description=error_description)
+  if match_response_cep is None:
+      raise BadRequest(
+          description={
+              "error_message": "cep is invalid",
+              "valid_cep_format": "xxxxx-xxx",
+              "invalid_longitude": cep,
+            }
+        )
 
   formatted_data = {
-        "street": data["street"].title(),
-        "number": data["number"],
-        "city": data["city"].title(),
-        "state": data["state"].title(),
-        "country": data["country"].title(),
-        "cep": data["cep"]
+        "street": request_data["street"].title(),
+        "number": request_data["number"],
+        "city": request_data["city"].title(),
+        "state": request_data["state"].title(),
+        "country": request_data["country"].title(),
+        "cep": request_data["cep"]
     }
   
   return formatted_data
 
 
-def check_address_data_update(request):
-    accepted_keys = set(getenv("ADDRESS_KEYS").split(","))
-    request_keys = set(request.keys())
-    wrong_keys = set(request) - accepted_keys
+def check_address_data_update(request_data: dict):
+    valid_keys = set(getenv("ADDRESS_KEYS").split(","))
+    wrong_keys = set(request_data) - valid_keys
 
     if wrong_keys:
         error_description = {"wrong keys": list(wrong_keys)}
@@ -63,6 +60,19 @@ def check_address_data_update(request):
             error_description = {"wrong key": list(wrong_keys)[0]}
 
         raise BadRequest(description=error_description)
+
+    if 'cep' in request_data.keys():
+      cep: str = request_data["cep"]
+      match_rule_longitude = r"^[0-9]{5}-[0-9]{3}$"
+      match_response_cep = re.fullmatch(match_rule_longitude, cep)
+
+      if match_response_cep is None:
+          raise BadRequest(
+              description={
+                  "error_message": "cep is invalid",
+                  "valid_cep_format": "xxxxx-xxx",
+                  "invalid_longitude": cep,
+                }
+            )
     
-    
-    return request
+    return request_data
