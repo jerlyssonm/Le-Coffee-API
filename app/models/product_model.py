@@ -4,15 +4,17 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from app.configs.database import db
-
+from app.models.feedback_model import FeedbackModel
 
 @dataclass
 class ProductModel(db.Model):
+    product_id: int
     name: str
     price: float
     # image: str
     description: str
     category: str
+    feedbacks: FeedbackModel
 
     __tablename__ = "products"
 

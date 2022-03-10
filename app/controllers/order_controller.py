@@ -83,7 +83,7 @@ def create_order():
             "order_id": order.order_id,
             "date": order.date,
             "total_price": order.total_price,
-            "user_id": order.user_id,
+            "user_id": order.user_id
         }, HTTPStatus.CREATED
 
     except BadRequest as error:
