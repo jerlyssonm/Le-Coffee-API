@@ -18,7 +18,6 @@ def create_message(order_id: int):
         session: Session = db.session
         data = request.get_json()
         data["order_id"] = order_id
-        print(data)
         validate_message(data)
 
         current_user = get_jwt_identity()
