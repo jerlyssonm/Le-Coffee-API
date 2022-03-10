@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.configs.database import db
+from app.models.product_model import ProductModel
 
 
 @dataclass
@@ -12,6 +13,7 @@ class RegionModel(db.Model):
   name: str
   latitude: str
   longitude: str
+  products: ProductModel
 
   __tablename__ = "regions"
 
