@@ -1,4 +1,3 @@
-from os import getenv
 from werkzeug.exceptions import BadRequest
 
 def validate_message(data: dict):
