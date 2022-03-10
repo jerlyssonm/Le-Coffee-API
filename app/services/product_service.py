@@ -71,7 +71,7 @@ def validate_product(request_data: dict):
 
 
     formatted_data = {
-        'name': request_data['name'].title(),
+        'name': request_data['name'].title().strip(),
         'price': float('{:.2f}'.format(request_data['price'])) ,
         'description': request_data['description'],
         'region': request_data['region'],
