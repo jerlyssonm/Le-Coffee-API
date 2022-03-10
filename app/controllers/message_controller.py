@@ -23,7 +23,7 @@ def create_message(order_id: int):
 
         current_user = get_jwt_identity()
         message = MessageModel(**data)
-        message.sender_id = current_user["user_id"]
+        message.user_id = current_user["user_id"]
         session.add(message)
         session.commit()
 
