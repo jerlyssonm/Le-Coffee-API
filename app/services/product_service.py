@@ -10,7 +10,7 @@ def validate_product(request_data: dict):
     valid_regions = getenv("REGIONS").split(",")
 
     allowed_number_of_keys_ = 7
-
+    request_data["category"].lower()
     if len(request_data) < allowed_number_of_keys_:
         missing_keys = valid_keys - set(request_data.keys())
         error_description = {"missing keys": list(missing_keys)}
@@ -30,10 +30,16 @@ def validate_product(request_data: dict):
             }
         )
 
-    if request_data['category'] not in valid_categories:
+    
+    if request_data['category'].lower() not in valid_categories:
         error_description = {"Invalid Category": request_data['category'], "Categories availiable": valid_categories}
 
         raise BadRequest(description=error_description)
+
+    if request_data["category"].lower() == "moido":
+        request_data["category"] = "Moído"
+    if request_data["category"].lower() == "grao":
+        request_data["category"] = "Grão"
 
     request_data['region'] = request_data['region'].title()
     
